@@ -112,9 +112,9 @@ const RegistrationScreen: React.FunctionComponent = () => {
           source={require("../assets/images/bg.jpg")}
           style={styles.image}
         >
-          <View style={{ ...styles.wrapper, padding: isActive ? 32 : -142 }}>
+          <View style={styles.wrapper}>
             <KeyboardAvoidingView
-              behavior={Platform.OS == "ios" ? "padding" : "height"}
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
               <View
                 style={[
@@ -129,7 +129,12 @@ const RegistrationScreen: React.FunctionComponent = () => {
               </View>
               <Text style={styles.pageTitle}>Регистрация</Text>
 
-              <View style={styles.inputWrapper}>
+              <View
+                style={{
+                  ...styles.inputWrapper,
+                  marginBottom: isActive ? 32 : 43,
+                }}
+              >
                 <View>
                   <TextInput
                     style={{
@@ -145,6 +150,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
                       setIsActive(true);
                       dispatch({ type: "email", payload: true });
                     }}
+                    onBlur={keyboardCloseHandler}
                     onChangeText={(value) =>
                       setFormState((prevState) => ({
                         ...prevState,
@@ -168,6 +174,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
                       setIsActive(true);
                       dispatch({ type: "login", payload: true });
                     }}
+                    onBlur={keyboardCloseHandler}
                     onChangeText={(value) =>
                       setFormState((prevState) => ({
                         ...prevState,
@@ -192,6 +199,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
                       setIsActive(true);
                       dispatch({ type: "password", payload: true });
                     }}
+                    onBlur={keyboardCloseHandler}
                     onChangeText={(value) =>
                       setFormState((prevState) => ({
                         ...prevState,
@@ -207,16 +215,15 @@ const RegistrationScreen: React.FunctionComponent = () => {
                   </Text>
                 </View>
               </View>
-
-              <TouchableOpacity
-                style={styles.button}
-                activeOpacity={0.8}
-                onPress={submitHandler}
-              >
-                <Text style={styles.btnText}>Зарегистрироваться</Text>
-              </TouchableOpacity>
-              <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
             </KeyboardAvoidingView>
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.8}
+              onPress={submitHandler}
+            >
+              <Text style={styles.btnText}>Зарегистрироваться</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
           </View>
         </ImageBackground>
       </View>
@@ -243,7 +250,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     position: "absolute",
-    top: -152,
+    top: "-50%",
     left: "50%",
     width: 120,
     height: 120,
@@ -270,7 +277,6 @@ const styles = StyleSheet.create({
   inputWrapper: {
     display: "flex",
     flexDirection: "column",
-    marginBottom: 43,
     position: "relative",
   },
   input: {
@@ -306,6 +312,7 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     textAlign: "center",
     marginTop: 16,
+    marginBottom: 75,
   },
 
   showHide: {
@@ -320,5 +327,3 @@ const styles = StyleSheet.create({
 });
 
 export default RegistrationScreen;
-
-// 78 without, 32 with keyboard after last input
