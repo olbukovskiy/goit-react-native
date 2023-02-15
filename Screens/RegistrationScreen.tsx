@@ -13,11 +13,28 @@ import {
 } from "react-native";
 import { useState } from "react";
 
+interface IState {
+  email: string;
+  login: string;
+  password: string;
+}
+
+const initialState: IState = {
+  email: "",
+  login: "",
+  password: "",
+};
+
 const RegistrationScreen: React.FunctionComponent = () => {
+  const [formState, setFormState] = useState<IState>(initialState);
   const [isActive, setIsActive] = useState<boolean>(false);
+
   const keyboardCloseHandler = () => {
+    setIsActive(false);
     Keyboard.dismiss();
+    console.log(formState);
   };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -42,28 +59,53 @@ const RegistrationScreen: React.FunctionComponent = () => {
               <View>
                 <TextInput
                   style={{ ...styles.input, marginBottom: 16 }}
-                  placeholder="Логин"
+                  placeholder="Login"
                   placeholderTextColor="#BDBDBD"
+                  value={formState.login}
+                  onChangeText={(value) =>
+                    setFormState((prevState) => ({
+                      ...prevState,
+                      login: value,
+                    }))
+                  }
                 />
               </View>
               <View>
                 <TextInput
                   style={{ ...styles.input, marginBottom: 16 }}
-                  placeholder="Адрес электронной почты"
+                  placeholder="Email adress"
                   placeholderTextColor="#BDBDBD"
+                  value={formState.email}
+                  onChangeText={(value) =>
+                    setFormState((prevState) => ({
+                      ...prevState,
+                      email: value,
+                    }))
+                  }
                 />
               </View>
               <View>
                 <TextInput
                   style={styles.input}
                   textContentType="password"
-                  placeholder="Пароль"
+                  placeholder="Password"
                   placeholderTextColor="#BDBDBD"
                   secureTextEntry={true}
+                  value={formState.password}
+                  onChangeText={(value) =>
+                    setFormState((prevState) => ({
+                      ...prevState,
+                      password: value,
+                    }))
+                  }
                 />
               </View>
             </KeyboardAvoidingView>
-            <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.8}
+              onPress={keyboardCloseHandler}
+            >
               <Text style={styles.btnText}>Зарегистрироваться</Text>
             </TouchableOpacity>
             <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
