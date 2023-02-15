@@ -6,45 +6,69 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
+import { useState } from "react";
 
 const RegistrationScreen: React.FunctionComponent = () => {
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const keyboardCloseHandler = () => {
+    Keyboard.dismiss();
+  };
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require("../assets/images/bg.jpg")}
         style={styles.image}
       >
-        <View style={styles.wrapper}>
-          <View
-            style={[styles.imageWrapper, { transform: [{ translateX: -50 }] }]}
-          >
-            <Image style={styles.contentImage} />
+        <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
+          <View style={styles.wrapper}>
+            <View
+              style={[
+                styles.imageWrapper,
+                { transform: [{ translateX: -50 }] },
+              ]}
+            >
+              <Image style={styles.contentImage} />
+            </View>
+            <Text style={styles.pageTitle}>Регистрация</Text>
+            <KeyboardAvoidingView
+              behavior={Platform.OS == "ios" ? "padding" : "height"}
+              style={styles.inputWrapper}
+            >
+              <View>
+                <TextInput
+                  style={{ ...styles.input, marginBottom: 16 }}
+                  placeholder="Логин"
+                  placeholderTextColor="#BDBDBD"
+                />
+              </View>
+              <View>
+                <TextInput
+                  style={{ ...styles.input, marginBottom: 16 }}
+                  placeholder="Адрес электронной почты"
+                  placeholderTextColor="#BDBDBD"
+                />
+              </View>
+              <View>
+                <TextInput
+                  style={styles.input}
+                  textContentType="password"
+                  placeholder="Пароль"
+                  placeholderTextColor="#BDBDBD"
+                  secureTextEntry={true}
+                />
+              </View>
+            </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+              <Text style={styles.btnText}>Зарегистрироваться</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
           </View>
-          <Text style={styles.pageTitle}>Регистрация</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={{ ...styles.input, marginBottom: 16 }}
-              placeholder="Логин"
-              placeholderTextColor="#BDBDBD"
-            />
-            <TextInput
-              style={{ ...styles.input, marginBottom: 16 }}
-              placeholder="Адрес электронной почты"
-              placeholderTextColor="#BDBDBD"
-            />
-            <TextInput
-              style={styles.input}
-              textContentType="password"
-              placeholder="Пароль"
-              placeholderTextColor="#BDBDBD"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} activeOpacity={0.8}>
-            <Text style={styles.btnText}>Зарегистрироваться</Text>
-          </TouchableOpacity>
-          <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
-        </View>
+        </TouchableWithoutFeedback>
       </ImageBackground>
     </View>
   );

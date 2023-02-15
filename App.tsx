@@ -8,7 +8,7 @@ import RegistrationScreen from "./Screens/RegistrationScreen";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [isReady, setIsReady] = useState(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
 
   useEffect(() => {
     (async function prepare() {
@@ -31,6 +31,8 @@ export default function App() {
       await SplashScreen.hideAsync();
     }
   }, [isReady]);
+
+  if (!isReady) return null;
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
