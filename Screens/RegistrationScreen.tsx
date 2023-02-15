@@ -11,12 +11,24 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { useState } from "react";
+import { AntDesign } from "@expo/vector-icons";
+import { useState, useReducer } from "react";
 
 interface IState {
   email: string;
   login: string;
   password: string;
+}
+
+interface IPasswordSettings {
+  isVisible: boolean;
+  text: "Show" | "Hide";
+}
+
+interface IReducerState {
+  email: boolean;
+  login: boolean;
+  password: boolean;
 }
 
 const initialState: IState = {
@@ -25,94 +37,190 @@ const initialState: IState = {
   password: "",
 };
 
+const reducerState: IReducerState = {
+  email: false,
+  login: false,
+  password: false,
+};
+
+const passwordSettings: IPasswordSettings = {
+  isVisible: true,
+  text: "Show",
+};
+
+function reducer(
+  state: IReducerState,
+  action: { type: string; payload: boolean }
+): IReducerState {
+  switch (action.type) {
+    case "email":
+      return {
+        ...state,
+        email: action.payload,
+      };
+    case "login":
+      return {
+        ...state,
+        login: action.payload,
+      };
+    case "password":
+      return {
+        ...state,
+        password: action.payload,
+      };
+    case "unset":
+      return {
+        email: false,
+        login: false,
+        password: false,
+      };
+    default:
+      return { ...state };
+  }
+}
+
 const RegistrationScreen: React.FunctionComponent = () => {
   const [formState, setFormState] = useState<IState>(initialState);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [isPasswordVisible, setIsPasswordVisible] =
+    useState<IPasswordSettings>(passwordSettings);
+  const [state, dispatch] = useReducer(reducer, reducerState);
 
   const keyboardCloseHandler = () => {
     setIsActive(false);
     Keyboard.dismiss();
+    dispatch({ type: "unset", payload: false });
+  };
+
+  const submitHandler = () => {
+    keyboardCloseHandler();
     console.log(formState);
+    setFormState(initialState);
+  };
+
+  const changePasswordSettings = () => {
+    setIsPasswordVisible((prevState) => ({
+      isVisible: !prevState.isVisible,
+      text: prevState.text === "Show" ? "Hide" : "Show",
+    }));
   };
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../assets/images/bg.jpg")}
-        style={styles.image}
-      >
-        <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
-          <View style={styles.wrapper}>
-            <View
-              style={[
-                styles.imageWrapper,
-                { transform: [{ translateX: -50 }] },
-              ]}
-            >
-              <Image style={styles.contentImage} />
-            </View>
-            <Text style={styles.pageTitle}>Регистрация</Text>
+    <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../assets/images/bg.jpg")}
+          style={styles.image}
+        >
+          <View style={{ ...styles.wrapper, padding: isActive ? 32 : -142 }}>
             <KeyboardAvoidingView
               behavior={Platform.OS == "ios" ? "padding" : "height"}
-              style={styles.inputWrapper}
             >
-              <View>
-                <TextInput
-                  style={{ ...styles.input, marginBottom: 16 }}
-                  placeholder="Login"
-                  placeholderTextColor="#BDBDBD"
-                  value={formState.login}
-                  onChangeText={(value) =>
-                    setFormState((prevState) => ({
-                      ...prevState,
-                      login: value,
-                    }))
-                  }
-                />
+              <View
+                style={[
+                  styles.imageWrapper,
+                  { transform: [{ translateX: -50 }] },
+                ]}
+              >
+                <Image style={styles.contentImage} />
+                <TouchableOpacity style={styles.addIcon} activeOpacity={0.8}>
+                  <AntDesign name="pluscircleo" size={25} color="#FF6C00" />
+                </TouchableOpacity>
               </View>
-              <View>
-                <TextInput
-                  style={{ ...styles.input, marginBottom: 16 }}
-                  placeholder="Email adress"
-                  placeholderTextColor="#BDBDBD"
-                  value={formState.email}
-                  onChangeText={(value) =>
-                    setFormState((prevState) => ({
-                      ...prevState,
-                      email: value,
-                    }))
-                  }
-                />
+              <Text style={styles.pageTitle}>Регистрация</Text>
+
+              <View style={styles.inputWrapper}>
+                <View>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      marginBottom: 16,
+                      backgroundColor: state.email ? "#fff" : "#F6F6F6",
+                      borderColor: state.email ? "#FF6C00" : "#E8E8E8",
+                    }}
+                    placeholder="Login"
+                    placeholderTextColor="#BDBDBD"
+                    value={formState.login}
+                    onFocus={() => {
+                      setIsActive(true);
+                      dispatch({ type: "email", payload: true });
+                    }}
+                    onChangeText={(value) =>
+                      setFormState((prevState) => ({
+                        ...prevState,
+                        login: value,
+                      }))
+                    }
+                  />
+                </View>
+                <View>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      marginBottom: 16,
+                      backgroundColor: state.login ? "#fff" : "#F6F6F6",
+                      borderColor: state.login ? "#FF6C00" : "#E8E8E8",
+                    }}
+                    placeholder="Email adress"
+                    placeholderTextColor="#BDBDBD"
+                    value={formState.email}
+                    onFocus={() => {
+                      setIsActive(true);
+                      dispatch({ type: "login", payload: true });
+                    }}
+                    onChangeText={(value) =>
+                      setFormState((prevState) => ({
+                        ...prevState,
+                        email: value,
+                      }))
+                    }
+                  />
+                </View>
+                <View style={{ position: "relative" }}>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      backgroundColor: state.password ? "#fff" : "#F6F6F6",
+                      borderColor: state.password ? "#FF6C00" : "#E8E8E8",
+                    }}
+                    textContentType="password"
+                    placeholder="Password"
+                    placeholderTextColor="#BDBDBD"
+                    secureTextEntry={isPasswordVisible.isVisible}
+                    value={formState.password}
+                    onFocus={() => {
+                      setIsActive(true);
+                      dispatch({ type: "password", payload: true });
+                    }}
+                    onChangeText={(value) =>
+                      setFormState((prevState) => ({
+                        ...prevState,
+                        password: value,
+                      }))
+                    }
+                  />
+                  <Text
+                    style={styles.showHide}
+                    onPress={() => changePasswordSettings()}
+                  >
+                    {isPasswordVisible.text}
+                  </Text>
+                </View>
               </View>
-              <View>
-                <TextInput
-                  style={styles.input}
-                  textContentType="password"
-                  placeholder="Password"
-                  placeholderTextColor="#BDBDBD"
-                  secureTextEntry={true}
-                  value={formState.password}
-                  onChangeText={(value) =>
-                    setFormState((prevState) => ({
-                      ...prevState,
-                      password: value,
-                    }))
-                  }
-                />
-              </View>
+
+              <TouchableOpacity
+                style={styles.button}
+                activeOpacity={0.8}
+                onPress={submitHandler}
+              >
+                <Text style={styles.btnText}>Зарегистрироваться</Text>
+              </TouchableOpacity>
+              <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
             </KeyboardAvoidingView>
-            <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.8}
-              onPress={keyboardCloseHandler}
-            >
-              <Text style={styles.btnText}>Зарегистрироваться</Text>
-            </TouchableOpacity>
-            <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
           </View>
-        </TouchableWithoutFeedback>
-      </ImageBackground>
-    </View>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -127,7 +235,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     paddingTop: 92,
-    paddingBottom: 78,
     paddingLeft: 16,
     paddingRight: 16,
     borderTopLeftRadius: 25,
@@ -136,7 +243,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     position: "absolute",
-    top: -60,
+    top: -152,
     left: "50%",
     width: 120,
     height: 120,
@@ -146,10 +253,25 @@ const styles = StyleSheet.create({
   contentImage: {
     flex: 1,
   },
+  addIcon: {
+    position: "absolute",
+    right: -12.5,
+    bottom: 14,
+  },
+  pageTitle: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 30,
+    lineHeight: 35,
+    color: "#212121",
+    textAlign: "center",
+
+    marginBottom: 33,
+  },
   inputWrapper: {
     display: "flex",
     flexDirection: "column",
     marginBottom: 43,
+    position: "relative",
   },
   input: {
     fontFamily: "Roboto-Regular",
@@ -158,10 +280,8 @@ const styles = StyleSheet.create({
 
     padding: 16,
     borderWidth: 1,
-    borderColor: "#E8E8E8",
     borderStyle: "solid",
     borderRadius: 8,
-    backgroundColor: "#F6F6F6",
   },
   button: {
     alignItems: "center",
@@ -187,22 +307,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
   },
-  pageTitle: {
-    fontFamily: "Roboto-Medium",
-    fontSize: 30,
-    lineHeight: 35,
-    color: "#212121",
-    textAlign: "center",
 
-    marginBottom: 33,
+  showHide: {
+    position: "absolute",
+    right: 16,
+    top: 16,
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#1B4371",
   },
 });
 
 export default RegistrationScreen;
 
-// BDBDBD - колір тексту в інпутах
-// 212121 - колір основного тексту  F6F6F6 - колір бг картинки FF6C00 - колір кнопки 1B4371 - показать и есть акаунт
-
-//  "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-//           "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-//           "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+// 78 without, 32 with keyboard after last input
