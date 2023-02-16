@@ -59,98 +59,95 @@ const LoginScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
-      <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={styles.container}>
         <ImageBackground
           style={styles.image}
           source={require("../assets/images/bg.jpg")}
         >
-          <View>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
+            <View
+              style={{
+                ...styles.wrapper,
+                marginBottom: isActive ? -240 : 0,
+              }}
             >
-              <View
-                style={{
-                  ...styles.wrapper,
-                }}
-              >
-                <View style={{ marginBottom: 43 }}>
-                  <Text style={styles.title}>Войти</Text>
-                  <View style={styles.inputWrapper}>
-                    <TextInput
-                      style={{
-                        ...styles.input,
-                        marginBottom: 16,
-                        backgroundColor: state.login ? "#fff" : "#F6F6F6",
-                        borderColor: state.login ? "#FF6C00" : "#E8E8E8",
-                      }}
-                      placeholder="Адресс электронной почты"
-                      placeholderTextColor="#BDBDBD"
-                      value={formState.email}
-                      onFocus={() => {
-                        setIsActive(true);
-                        dispatch({ type: "login", payload: true });
-                      }}
-                      onBlur={() => {
-                        dispatch({ type: "unset", payload: false });
-                        setIsActive(false);
-                      }}
-                      onChangeText={(value) =>
-                        setFormState((prevState) => ({
-                          ...prevState,
-                          email: value,
-                        }))
-                      }
-                    />
-                  </View>
-                  <View style={styles.inputWrapper}>
-                    <TextInput
-                      style={{
-                        ...styles.input,
-                        backgroundColor: state.password ? "#fff" : "#F6F6F6",
-                        borderColor: state.password ? "#FF6C00" : "#E8E8E8",
-                      }}
-                      textContentType="password"
-                      placeholder="Пароль"
-                      placeholderTextColor="#BDBDBD"
-                      secureTextEntry={isPasswordVisible.isVisible}
-                      value={formState.password}
-                      onFocus={() => {
-                        setIsActive(true);
-                        dispatch({ type: "password", payload: true });
-                      }}
-                      onBlur={() => {
-                        dispatch({ type: "unset", payload: false });
-                        setIsActive(false);
-                      }}
-                      onChangeText={(value) =>
-                        setFormState((prevState) => ({
-                          ...prevState,
-                          password: value,
-                        }))
-                      }
-                    />
-                    <Text
-                      style={styles.showHide}
-                      onPress={() => changePasswordSettings()}
-                    >
-                      {isPasswordVisible.text}
-                    </Text>
-                  </View>
+              <View style={{ marginBottom: 43 }}>
+                <Text style={styles.title}>Войти</Text>
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      marginBottom: 16,
+                      backgroundColor: state.login ? "#fff" : "#F6F6F6",
+                      borderColor: state.login ? "#FF6C00" : "#E8E8E8",
+                    }}
+                    placeholder="Адресс электронной почты"
+                    placeholderTextColor="#BDBDBD"
+                    value={formState.email}
+                    onFocus={() => {
+                      setIsActive(true);
+                      dispatch({ type: "login", payload: true });
+                    }}
+                    onBlur={() => {
+                      dispatch({ type: "unset", payload: false });
+                      setIsActive(false);
+                    }}
+                    onChangeText={(value) =>
+                      setFormState((prevState) => ({
+                        ...prevState,
+                        email: value,
+                      }))
+                    }
+                  />
                 </View>
-
-                <TouchableOpacity
-                  style={styles.button}
-                  activeOpacity={0.8}
-                  onPress={submitHandler}
-                >
-                  <Text style={styles.btnText}>Войти</Text>
-                </TouchableOpacity>
-                <Text style={styles.text}>
-                  Нет аккаунта? Зарегистрироваться
-                </Text>
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      backgroundColor: state.password ? "#fff" : "#F6F6F6",
+                      borderColor: state.password ? "#FF6C00" : "#E8E8E8",
+                    }}
+                    textContentType="password"
+                    placeholder="Пароль"
+                    placeholderTextColor="#BDBDBD"
+                    secureTextEntry={isPasswordVisible.isVisible}
+                    value={formState.password}
+                    onFocus={() => {
+                      setIsActive(true);
+                      dispatch({ type: "password", payload: true });
+                    }}
+                    onBlur={() => {
+                      dispatch({ type: "unset", payload: false });
+                      setIsActive(false);
+                    }}
+                    onChangeText={(value) =>
+                      setFormState((prevState) => ({
+                        ...prevState,
+                        password: value,
+                      }))
+                    }
+                  />
+                  <Text
+                    style={styles.showHide}
+                    onPress={() => changePasswordSettings()}
+                  >
+                    {isPasswordVisible.text}
+                  </Text>
+                </View>
               </View>
-            </KeyboardAvoidingView>
-          </View>
+
+              <TouchableOpacity
+                style={styles.button}
+                activeOpacity={0.8}
+                onPress={submitHandler}
+              >
+                <Text style={styles.btnText}>Войти</Text>
+              </TouchableOpacity>
+              <Text style={styles.text}>Нет аккаунта? Зарегистрироваться</Text>
+            </View>
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -158,6 +155,7 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
   image: {
     flex: 1,
     resizeMode: "cover",

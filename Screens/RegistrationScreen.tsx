@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useState, useReducer } from "react";
@@ -60,12 +61,15 @@ const RegistrationScreen: React.FunctionComponent = () => {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <ImageBackground
           source={require("../assets/images/bg.jpg")}
           style={styles.image}
         >
-          <KeyboardAvoidingView style={styles.wrapper} behavior={"padding"}>
+          <KeyboardAvoidingView
+            style={styles.wrapper}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
             <View style={{ marginBottom: isActive ? -175 : 0 }}>
               <View
                 style={[
@@ -188,6 +192,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
 };
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
   image: {
     flex: 1,
     resizeMode: "cover",
