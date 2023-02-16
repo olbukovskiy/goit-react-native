@@ -13,23 +13,8 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useState, useReducer } from "react";
-
-interface IState {
-  email: string;
-  login: string;
-  password: string;
-}
-
-interface IPasswordSettings {
-  isVisible: boolean;
-  text: "Показать" | "Скрыть";
-}
-
-interface IReducerState {
-  email: boolean;
-  login: boolean;
-  password: boolean;
-}
+import { IState, IPasswordSettings, IReducerState } from "../services/types";
+import { reducer } from "../services/functions";
 
 const initialState: IState = {
   email: "",
@@ -47,37 +32,6 @@ const passwordSettings: IPasswordSettings = {
   isVisible: true,
   text: "Показать",
 };
-
-function reducer(
-  state: IReducerState,
-  action: { type: string; payload: boolean }
-): IReducerState {
-  switch (action.type) {
-    case "email":
-      return {
-        ...state,
-        email: action.payload,
-      };
-    case "login":
-      return {
-        ...state,
-        login: action.payload,
-      };
-    case "password":
-      return {
-        ...state,
-        password: action.payload,
-      };
-    case "unset":
-      return {
-        email: false,
-        login: false,
-        password: false,
-      };
-    default:
-      return { ...state };
-  }
-}
 
 const RegistrationScreen: React.FunctionComponent = () => {
   const [formState, setFormState] = useState<IState>(initialState);
@@ -112,11 +66,10 @@ const RegistrationScreen: React.FunctionComponent = () => {
           source={require("../assets/images/bg.jpg")}
           style={styles.image}
         >
-          <KeyboardAvoidingView
-            style={styles.wrapper}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-          >
-            <View style={{ marginBottom: isActive ? -175 : 0 }}>
+          <KeyboardAvoidingView behavior={"padding"}>
+            <View
+              style={{ ...styles.wrapper, marginBottom: isActive ? -175 : 0 }}
+            >
               <View
                 style={[
                   styles.imageWrapper,
@@ -130,12 +83,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
               </View>
               <Text style={styles.pageTitle}>Регистрация</Text>
 
-              <View
-                style={{
-                  ...styles.inputWrapper,
-                  marginBottom: 43,
-                }}
-              >
+              <View style={styles.inputWrapper}>
                 <View>
                   <TextInput
                     style={{
@@ -227,7 +175,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
               </View>
 
               <TouchableOpacity
-                style={styles.button}
+                style={{ ...styles.button, marginTop: 43 }}
                 activeOpacity={0.8}
                 onPress={submitHandler}
               >
@@ -252,6 +200,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   wrapper: {
+    position: "relative",
     paddingTop: 92,
     paddingLeft: 16,
     paddingRight: 16,
@@ -261,7 +210,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     position: "absolute",
-    top: -150,
+    top: -152,
     left: "50%",
     width: 120,
     height: 120,
@@ -286,8 +235,6 @@ const styles = StyleSheet.create({
     marginBottom: 33,
   },
   inputWrapper: {
-    display: "flex",
-    flexDirection: "column",
     position: "relative",
   },
   input: {
@@ -325,7 +272,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 75,
   },
-
   showHide: {
     position: "absolute",
     right: 16,
