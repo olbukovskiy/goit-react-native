@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
-  Platform,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -61,15 +60,13 @@ const RegistrationScreen: React.FunctionComponent = () => {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         <ImageBackground
           source={require("../assets/images/bg.jpg")}
           style={styles.image}
         >
-          <KeyboardAvoidingView behavior={"padding"}>
-            <View
-              style={{ ...styles.wrapper, marginBottom: isActive ? -175 : 0 }}
-            >
+          <KeyboardAvoidingView style={styles.wrapper} behavior={"padding"}>
+            <View style={{ marginBottom: isActive ? -175 : 0 }}>
               <View
                 style={[
                   styles.imageWrapper,
@@ -191,9 +188,6 @@ const RegistrationScreen: React.FunctionComponent = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   image: {
     flex: 1,
     resizeMode: "cover",
