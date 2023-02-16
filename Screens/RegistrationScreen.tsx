@@ -22,7 +22,7 @@ interface IState {
 
 interface IPasswordSettings {
   isVisible: boolean;
-  text: "Show" | "Hide";
+  text: "Показать" | "Скрыть";
 }
 
 interface IReducerState {
@@ -45,7 +45,7 @@ const reducerState: IReducerState = {
 
 const passwordSettings: IPasswordSettings = {
   isVisible: true,
-  text: "Show",
+  text: "Показать",
 };
 
 function reducer(
@@ -94,14 +94,14 @@ const RegistrationScreen: React.FunctionComponent = () => {
 
   const submitHandler = () => {
     keyboardCloseHandler();
-    console.log(formState);
     setFormState(initialState);
+    console.log(formState);
   };
 
   const changePasswordSettings = () => {
     setIsPasswordVisible((prevState) => ({
       isVisible: !prevState.isVisible,
-      text: prevState.text === "Show" ? "Hide" : "Show",
+      text: prevState.text === "Показать" ? "Скрыть" : "Показать",
     }));
   };
 
@@ -112,10 +112,11 @@ const RegistrationScreen: React.FunctionComponent = () => {
           source={require("../assets/images/bg.jpg")}
           style={styles.image}
         >
-          <View style={styles.wrapper}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-            >
+          <KeyboardAvoidingView
+            style={styles.wrapper}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <View style={{ marginBottom: isActive ? -175 : 0 }}>
               <View
                 style={[
                   styles.imageWrapper,
@@ -132,7 +133,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
               <View
                 style={{
                   ...styles.inputWrapper,
-                  marginBottom: isActive ? 32 : 43,
+                  marginBottom: 43,
                 }}
               >
                 <View>
@@ -143,14 +144,17 @@ const RegistrationScreen: React.FunctionComponent = () => {
                       backgroundColor: state.email ? "#fff" : "#F6F6F6",
                       borderColor: state.email ? "#FF6C00" : "#E8E8E8",
                     }}
-                    placeholder="Login"
+                    placeholder="Логин"
                     placeholderTextColor="#BDBDBD"
                     value={formState.login}
                     onFocus={() => {
                       setIsActive(true);
                       dispatch({ type: "email", payload: true });
                     }}
-                    onBlur={keyboardCloseHandler}
+                    onBlur={() => {
+                      dispatch({ type: "unset", payload: false });
+                      setIsActive(false);
+                    }}
                     onChangeText={(value) =>
                       setFormState((prevState) => ({
                         ...prevState,
@@ -167,14 +171,17 @@ const RegistrationScreen: React.FunctionComponent = () => {
                       backgroundColor: state.login ? "#fff" : "#F6F6F6",
                       borderColor: state.login ? "#FF6C00" : "#E8E8E8",
                     }}
-                    placeholder="Email adress"
+                    placeholder="Адресс электронной почты"
                     placeholderTextColor="#BDBDBD"
                     value={formState.email}
                     onFocus={() => {
                       setIsActive(true);
                       dispatch({ type: "login", payload: true });
                     }}
-                    onBlur={keyboardCloseHandler}
+                    onBlur={() => {
+                      dispatch({ type: "unset", payload: false });
+                      setIsActive(false);
+                    }}
                     onChangeText={(value) =>
                       setFormState((prevState) => ({
                         ...prevState,
@@ -191,7 +198,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
                       borderColor: state.password ? "#FF6C00" : "#E8E8E8",
                     }}
                     textContentType="password"
-                    placeholder="Password"
+                    placeholder="Пароль"
                     placeholderTextColor="#BDBDBD"
                     secureTextEntry={isPasswordVisible.isVisible}
                     value={formState.password}
@@ -199,7 +206,10 @@ const RegistrationScreen: React.FunctionComponent = () => {
                       setIsActive(true);
                       dispatch({ type: "password", payload: true });
                     }}
-                    onBlur={keyboardCloseHandler}
+                    onBlur={() => {
+                      dispatch({ type: "unset", payload: false });
+                      setIsActive(false);
+                    }}
                     onChangeText={(value) =>
                       setFormState((prevState) => ({
                         ...prevState,
@@ -215,16 +225,17 @@ const RegistrationScreen: React.FunctionComponent = () => {
                   </Text>
                 </View>
               </View>
-            </KeyboardAvoidingView>
-            <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.8}
-              onPress={submitHandler}
-            >
-              <Text style={styles.btnText}>Зарегистрироваться</Text>
-            </TouchableOpacity>
-            <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
-          </View>
+
+              <TouchableOpacity
+                style={styles.button}
+                activeOpacity={0.8}
+                onPress={submitHandler}
+              >
+                <Text style={styles.btnText}>Зарегистрироваться</Text>
+              </TouchableOpacity>
+              <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
+            </View>
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -250,7 +261,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     position: "absolute",
-    top: "-50%",
+    top: -150,
     left: "50%",
     width: 120,
     height: 120,
