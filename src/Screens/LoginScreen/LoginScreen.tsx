@@ -1,20 +1,22 @@
 import {
   View,
   Text,
-  StyleSheet,
   ImageBackground,
   TextInput,
   TouchableOpacity,
-  Image,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import { useState, useReducer } from "react";
-import { IState, IPasswordSettings, IReducerState } from "../services/types";
-import { reducer } from "../services/functions";
+import {
+  IState,
+  IPasswordSettings,
+  IReducerState,
+} from "../../../services/types";
+import { reducer } from "../../../services/functions";
+import styles from "./styles";
 
 const initialState: IState = {
   email: "",
@@ -33,7 +35,7 @@ const passwordSettings: IPasswordSettings = {
   text: "Показать",
 };
 
-const RegistrationScreen: React.FunctionComponent = () => {
+const LoginScreen = () => {
   const [formState, setFormState] = useState<IState>(initialState);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] =
@@ -63,56 +65,21 @@ const RegistrationScreen: React.FunctionComponent = () => {
     <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../assets/images/bg.jpg")}
           style={styles.image}
+          source={require("../../../assets/images/bg.jpg")}
         >
           <KeyboardAvoidingView
-            style={styles.wrapper}
             behavior={Platform.OS === "ios" ? "padding" : undefined}
           >
-            <View style={{ marginBottom: isActive ? -175 : 0 }}>
-              <View
-                style={[
-                  styles.imageWrapper,
-                  { transform: [{ translateX: -50 }] },
-                ]}
-              >
-                <Image style={styles.contentImage} />
-                <TouchableOpacity style={styles.addIcon} activeOpacity={0.8}>
-                  <AntDesign name="pluscircleo" size={25} color="#FF6C00" />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.pageTitle}>Регистрация</Text>
-
-              <View style={styles.inputWrapper}>
-                <View>
-                  <TextInput
-                    style={{
-                      ...styles.input,
-                      marginBottom: 16,
-                      backgroundColor: state.email ? "#fff" : "#F6F6F6",
-                      borderColor: state.email ? "#FF6C00" : "#E8E8E8",
-                    }}
-                    placeholder="Логин"
-                    placeholderTextColor="#BDBDBD"
-                    value={formState.login}
-                    onFocus={() => {
-                      setIsActive(true);
-                      dispatch({ type: "email", payload: true });
-                    }}
-                    onBlur={() => {
-                      dispatch({ type: "unset", payload: false });
-                      setIsActive(false);
-                    }}
-                    onChangeText={(value) =>
-                      setFormState((prevState) => ({
-                        ...prevState,
-                        login: value,
-                      }))
-                    }
-                  />
-                </View>
-                <View>
+            <View
+              style={{
+                ...styles.wrapper,
+                marginBottom: isActive ? -240 : 0,
+              }}
+            >
+              <View style={{ marginBottom: 43 }}>
+                <Text style={styles.title}>Войти</Text>
+                <View style={styles.inputWrapper}>
                   <TextInput
                     style={{
                       ...styles.input,
@@ -139,7 +106,7 @@ const RegistrationScreen: React.FunctionComponent = () => {
                     }
                   />
                 </View>
-                <View style={{ position: "relative" }}>
+                <View style={styles.inputWrapper}>
                   <TextInput
                     style={{
                       ...styles.input,
@@ -176,13 +143,13 @@ const RegistrationScreen: React.FunctionComponent = () => {
               </View>
 
               <TouchableOpacity
-                style={{ ...styles.button, marginTop: 43 }}
+                style={styles.button}
                 activeOpacity={0.8}
                 onPress={submitHandler}
               >
-                <Text style={styles.btnText}>Зарегистрироваться</Text>
+                <Text style={styles.btnText}>Войти</Text>
               </TouchableOpacity>
-              <Text style={styles.text}>Уже есть аккаунт? Войти</Text>
+              <Text style={styles.text}>Нет аккаунта? Зарегистрироваться</Text>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -191,95 +158,4 @@ const RegistrationScreen: React.FunctionComponent = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
-  },
-  wrapper: {
-    position: "relative",
-    paddingTop: 92,
-    paddingLeft: 16,
-    paddingRight: 16,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    backgroundColor: "#FFFFFF",
-  },
-  imageWrapper: {
-    position: "absolute",
-    top: -152,
-    left: "50%",
-    width: 120,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  contentImage: {
-    flex: 1,
-  },
-  addIcon: {
-    position: "absolute",
-    right: -12.5,
-    bottom: 14,
-  },
-  pageTitle: {
-    fontFamily: "Roboto-Medium",
-    fontSize: 30,
-    lineHeight: 35,
-    color: "#212121",
-    textAlign: "center",
-
-    marginBottom: 33,
-  },
-  inputWrapper: {
-    position: "relative",
-  },
-  input: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    height: 50,
-
-    padding: 16,
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderRadius: 8,
-  },
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-
-    padding: 16,
-    paddingLeft: 32,
-    paddingRight: 32,
-
-    backgroundColor: "#FF6C00",
-    borderColor: "transparent",
-    borderRadius: 100,
-  },
-  btnText: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    color: "#fff",
-  },
-  text: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    color: "#1B4371",
-    textAlign: "center",
-    marginTop: 16,
-    marginBottom: 75,
-  },
-  showHide: {
-    position: "absolute",
-    right: 16,
-    top: 16,
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#1B4371",
-  },
-});
-
-export default RegistrationScreen;
+export default LoginScreen;

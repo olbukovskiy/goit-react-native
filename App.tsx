@@ -1,10 +1,12 @@
+<script src="http://localhost:8097"></script>;
+
 import { StyleSheet, View } from "react-native";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 import { useState, useEffect, useCallback } from "react";
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
+import RegistrationScreen from "./src/Screens/RegistrationScreen/RegistrationScreen";
+import LoginScreen from "./src/Screens/LoginScreen/LoginScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,6 +36,8 @@ export default function App() {
   }, [isReady]);
 
   if (!isReady) return null;
+
+  console.log("hallo");
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
