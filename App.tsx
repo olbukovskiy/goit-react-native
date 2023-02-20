@@ -1,14 +1,28 @@
 <script src="http://localhost:8097"></script>;
-
 import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  createStackNavigator,
+  StackNavigationOptions,
+} from "@react-navigation/stack";
+
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 import { useState, useEffect, useCallback } from "react";
-import RegistrationScreen from "./src/Screens/RegistrationScreen/RegistrationScreen";
-import LoginScreen from "./src/Screens/LoginScreen/LoginScreen";
+import { RootStackParamList } from "./services/types";
+import RegistrationScreen from "./src/Screens/authScreen/RegistrationScreen/RegistrationScreen";
+import LoginScreen from "./src/Screens/authScreen/LoginScreen/LoginScreen";
+import Home from "./src/Screens/mainScreen/Home";
+import CommentsScreen from "./src/Screens/mainScreen/CommentsScreen";
 
 SplashScreen.preventAutoHideAsync();
+const MainStack = createStackNavigator<RootStackParamList>();
+
+const options: StackNavigationOptions = {
+  headerShown: false,
+};
 
 export default function App() {
   const [isReady, setIsReady] = useState<boolean>(false);
@@ -37,12 +51,28 @@ export default function App() {
 
   if (!isReady) return null;
 
-  console.log("hallo");
-
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <RegistrationScreen />
-      {/* <LoginScreen /> */}
+      <NavigationContainer>
+        <MainStack.Navigator initialRouteName="Login">
+          <MainStack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={options}
+          />
+          <MainStack.Screen
+            name="Register"
+            component={RegistrationScreen}
+            options={options}
+          />
+          <MainStack.Screen name="Home" component={Home} options={options} />
+          <MainStack.Screen
+            name="Comment"
+            component={CommentsScreen}
+            options={{ title: "Комментарии", headerTitleAlign: "center" }}
+          />
+        </MainStack.Navigator>
+      </NavigationContainer>
     </View>
   );
 }

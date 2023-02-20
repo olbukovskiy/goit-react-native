@@ -1,33 +1,56 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: "#fff" },
   image: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "flex-end",
   },
   wrapper: {
-    backgroundColor: "#fff",
+    position: "relative",
+    paddingTop: 92,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingBottom: 75,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingHorizontal: 16,
-    paddingTop: 32,
-
-    justifyContent: "flex-start",
+    backgroundColor: "#FFFFFF",
   },
-  title: {
+  imageWrapper: {
+    position: "absolute",
+    top: -152,
+    left: "50%",
+    width: 120,
+    height: 120,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  contentImage: {
+    flex: 1,
+  },
+  addIcon: {
+    position: "absolute",
+    right: -12.5,
+    bottom: 14,
+  },
+  pageTitle: {
     fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
+    color: "#212121",
     textAlign: "center",
-    marginBottom: 32,
+
+    marginBottom: 33,
   },
-  inputWrapper: { position: "relative" },
+  inputWrapper: {
+    position: "relative",
+  },
   input: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     height: 50,
+
     padding: 16,
     borderWidth: 1,
     borderStyle: "solid",
@@ -50,15 +73,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff",
   },
+  textWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 16,
+  },
+  link: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    color: "#1B4371",
+    marginLeft: 5,
+  },
   text: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     color: "#1B4371",
-    textAlign: "center",
-    marginTop: 16,
-    marginBottom: 144,
   },
-
   showHide: {
     position: "absolute",
     right: 16,

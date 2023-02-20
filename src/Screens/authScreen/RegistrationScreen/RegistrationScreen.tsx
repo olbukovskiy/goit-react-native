@@ -4,18 +4,22 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
+  Image,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
 } from "react-native";
+import type { StackScreenProps } from "@react-navigation/stack";
+import { AntDesign } from "@expo/vector-icons";
 import { useState, useReducer } from "react";
 import {
   IState,
   IPasswordSettings,
   IReducerState,
-} from "../../../services/types";
-import { reducer } from "../../../services/functions";
+} from "../../../../services/types";
+import { reducer } from "../../../../services/functions";
+import { RootStackParamList } from "../../../../services/types";
 import styles from "./styles";
 
 const initialState: IState = {
@@ -35,7 +39,9 @@ const passwordSettings: IPasswordSettings = {
   text: "Показать",
 };
 
-const LoginScreen = () => {
+type Props = StackScreenProps<RootStackParamList, "Register">;
+
+const RegistrationScreen: React.FunctionComponent<Props> = ({ navigation }) => {
   const [formState, setFormState] = useState<IState>(initialState);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] =
@@ -52,6 +58,10 @@ const LoginScreen = () => {
     keyboardCloseHandler();
     setFormState(initialState);
     console.log(formState);
+    navigation.navigate("Home", {
+      screen: "PostsScreen",
+      params: { ...formState },
+    });
   };
 
   const changePasswordSettings = () => {
@@ -63,23 +73,58 @@ const LoginScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardCloseHandler}>
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         <ImageBackground
+          source={require("../../../../assets/images/bg.jpg")}
           style={styles.image}
-          source={require("../../../assets/images/bg.jpg")}
         >
           <KeyboardAvoidingView
+            style={styles.wrapper}
             behavior={Platform.OS === "ios" ? "padding" : undefined}
           >
-            <View
-              style={{
-                ...styles.wrapper,
-                marginBottom: isActive ? -240 : 0,
-              }}
-            >
-              <View style={{ marginBottom: 43 }}>
-                <Text style={styles.title}>Войти</Text>
-                <View style={styles.inputWrapper}>
+            <View style={{ marginBottom: isActive ? -175 : 0 }}>
+              <View
+                style={[
+                  styles.imageWrapper,
+                  { transform: [{ translateX: -60 }] },
+                ]}
+              >
+                <Image style={styles.contentImage} />
+                <TouchableOpacity style={styles.addIcon} activeOpacity={0.8}>
+                  <AntDesign name="pluscircleo" size={25} color="#FF6C00" />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.pageTitle}>Регистрация</Text>
+
+              <View style={styles.inputWrapper}>
+                <View>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      marginBottom: 16,
+                      backgroundColor: state.email ? "#fff" : "#F6F6F6",
+                      borderColor: state.email ? "#FF6C00" : "#E8E8E8",
+                    }}
+                    placeholder="Логин"
+                    placeholderTextColor="#BDBDBD"
+                    value={formState.login}
+                    onFocus={() => {
+                      setIsActive(true);
+                      dispatch({ type: "email", payload: true });
+                    }}
+                    onBlur={() => {
+                      dispatch({ type: "unset", payload: false });
+                      setIsActive(false);
+                    }}
+                    onChangeText={(value) =>
+                      setFormState((prevState) => ({
+                        ...prevState,
+                        login: value,
+                      }))
+                    }
+                  />
+                </View>
+                <View>
                   <TextInput
                     style={{
                       ...styles.input,
@@ -106,7 +151,7 @@ const LoginScreen = () => {
                     }
                   />
                 </View>
-                <View style={styles.inputWrapper}>
+                <View style={{ position: "relative" }}>
                   <TextInput
                     style={{
                       ...styles.input,
@@ -143,13 +188,22 @@ const LoginScreen = () => {
               </View>
 
               <TouchableOpacity
-                style={styles.button}
+                style={{ ...styles.button, marginTop: 43 }}
                 activeOpacity={0.8}
                 onPress={submitHandler}
               >
-                <Text style={styles.btnText}>Войти</Text>
+                <Text style={styles.btnText}>Зарегистрироваться</Text>
               </TouchableOpacity>
-              <Text style={styles.text}>Нет аккаунта? Зарегистрироваться</Text>
+
+              <View style={styles.textWrapper}>
+                <Text style={styles.text}>Уже есть аккаунт? </Text>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate("Login")}
+                >
+                  <Text style={styles.link}>Войти</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -158,4 +212,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default RegistrationScreen;
