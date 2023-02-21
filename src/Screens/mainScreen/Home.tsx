@@ -1,25 +1,26 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import ProfileScreen from "./ProfileScreen";
-import CreatePostsScreen from "./CreatePostsScreen";
-import PostsScreen from "./PostsScreen";
 import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { View } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../services/types";
+import ProfileScreen from "./ProfileScreen/ProfileScreen";
+import CreatePostsScreen from "./CreatePostsScreen/CreatePostsScreen";
+import PostsScreen from "./PostsScreen";
+import { RootStackParamList, TabsParamList } from "../../../services/types";
 
-const Tabs = createBottomTabNavigator();
+const Tabs = createBottomTabNavigator<TabsParamList>();
 
 type Props = StackScreenProps<RootStackParamList, "Home">;
 
 const Home: React.FunctionComponent<Props> = ({ navigation }) => {
   return (
-    <Tabs.Navigator initialRouteName="PostsScreen">
+    <Tabs.Navigator initialRouteName="PostsScreen" id="100500">
       <Tabs.Screen
         name="PostsScreen"
         component={PostsScreen}
         options={{
+          headerShown: true,
           title: "Публикации",
           headerTitleAlign: "center",
           headerRight: () => (

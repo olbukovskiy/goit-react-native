@@ -27,7 +27,7 @@ export type RootStackParamList = {
 };
 
 export type TabsParamList = {
-  PostsScreen: { login: string; email: string; password: string };
+  PostsScreen: { login: string; email: string; password: string } | undefined;
   CreatePost: any;
   Profile: any;
   Login: undefined;
