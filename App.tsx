@@ -14,6 +14,7 @@ import { RootStackParamList } from "./services/types";
 import RegistrationScreen from "./src/Screens/authScreen/RegistrationScreen/RegistrationScreen";
 import LoginScreen from "./src/Screens/authScreen/LoginScreen/LoginScreen";
 import Home from "./src/Screens/mainScreen/Home";
+import UserProvider from "./src/hooks/hooks";
 
 SplashScreen.preventAutoHideAsync();
 const MainStack = createStackNavigator<RootStackParamList>();
@@ -50,23 +51,25 @@ export default function App() {
   if (!isReady) return null;
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <NavigationContainer>
-        <MainStack.Navigator initialRouteName="Login">
-          <MainStack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={options}
-          />
-          <MainStack.Screen
-            name="Register"
-            component={RegistrationScreen}
-            options={options}
-          />
-          <MainStack.Screen name="Home" component={Home} options={options} />
-        </MainStack.Navigator>
-      </NavigationContainer>
-    </View>
+    <UserProvider>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <NavigationContainer>
+          <MainStack.Navigator initialRouteName="Login">
+            <MainStack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={options}
+            />
+            <MainStack.Screen
+              name="Register"
+              component={RegistrationScreen}
+              options={options}
+            />
+            <MainStack.Screen name="Home" component={Home} options={options} />
+          </MainStack.Navigator>
+        </NavigationContainer>
+      </View>
+    </UserProvider>
   );
 }
 

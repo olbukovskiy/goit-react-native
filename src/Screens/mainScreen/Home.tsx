@@ -15,7 +15,7 @@ type Props = StackScreenProps<RootStackParamList, "Home">;
 
 const Home: React.FunctionComponent<Props> = ({ navigation }) => {
   return (
-    <Tabs.Navigator initialRouteName="PostsScreen" id="100500">
+    <Tabs.Navigator initialRouteName="PostsScreen">
       <Tabs.Screen
         name="PostsScreen"
         component={PostsScreen}

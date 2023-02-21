@@ -1,4 +1,4 @@
-// import { View, Text, StyleSheet, Image } from "react-native";
+import { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { PostsStackParamList } from "../../../services/types";
 import Posts from "../../components/Posts/Posts";
@@ -9,6 +9,8 @@ import type { StackScreenProps } from "@react-navigation/stack";
 import type { CompositeScreenProps } from "@react-navigation/native";
 import { TabsParamList } from "../../../services/types";
 import { RootStackParamList } from "../../../services/types";
+import { useUser } from "../../hooks/hooks";
+
 const PostsStack = createStackNavigator<PostsStackParamList>();
 
 type Props = CompositeScreenProps<
@@ -17,14 +19,18 @@ type Props = CompositeScreenProps<
 >;
 
 const PostsScreen: React.FunctionComponent<Props> = ({ navigation }) => {
+  const { isShow } = useUser();
+
+  useEffect(() => {
+    navigation.setOptions({ headerShown: isShow });
+  }, [isShow]);
+
   return (
     <PostsStack.Navigator>
       <PostsStack.Screen
         name="Posts"
         component={Posts}
-        options={() => {
-          return { headerShown: false };
-        }}
+        options={{ headerShown: false }}
       />
       <PostsStack.Screen
         name="Comments"

@@ -3,7 +3,6 @@ import {
   Text,
   Image,
   SafeAreaView,
-  FlatList,
   TextInput,
   ScrollView,
 } from "react-native";
@@ -11,6 +10,8 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";
 import { PostsStackParamList } from "../../../../services/types";
 import { styles } from "./styles";
+import { useUser } from "../../../hooks/hooks";
+import { useEffect } from "react";
 
 type Props = StackScreenProps<PostsStackParamList, "Comments">;
 
@@ -72,7 +73,19 @@ const comments: IComment[] = [
   },
 ];
 
-const CommentsScreen: React.FunctionComponent<Props> = () => {
+const CommentsScreen: React.FunctionComponent<Props> = ({ navigation }) => {
+  const { showTab, hideTab } = useUser();
+
+  useEffect(() => {
+    navigation.addListener("focus", hideTab);
+    navigation.addListener("blur", showTab);
+
+    return () => {
+      navigation.removeListener("focus", hideTab);
+      navigation.removeListener("blur", showTab);
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
@@ -82,23 +95,6 @@ const CommentsScreen: React.FunctionComponent<Props> = () => {
           </View>
 
           <SafeAreaView style={styles.listWrapper}>
-            {/* <FlatList
-              data={comments}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => {
-                return (
-                  <View style={styles.commentWrapper}>
-                    <View style={styles.authorImageWrapper}>
-                      <Image style={styles.authorImage} />
-                    </View>
-                    <View style={styles.textWrapper}>
-                      <Text style={styles.text}>{item.content}</Text>
-                      <Text style={styles.date}>{item.posted}</Text>
-                    </View>
-                  </View>
-                );
-              }}
-            /> */}
             <ScrollView>
               {comments.map((item) => (
                 <View style={styles.commentWrapper} key={item.id}>
