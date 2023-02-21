@@ -5,12 +5,13 @@ import {
   ImageBackground,
   Image,
   TouchableOpacity,
+  SafeAreaView,
+  FlatList,
 } from "react-native";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather, Octicons } from "@expo/vector-icons";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { TabsParamList } from "../../../services/types";
-import { posts } from "./PostsScreen";
-import ProfilePostsList from "../../components/ProfilePostsList";
+import { posts } from "../../components/Posts/Posts";
 type Props = BottomTabScreenProps<TabsParamList, "Profile">;
 
 const ProfileScreen: React.FunctionComponent<Props> = ({
@@ -42,7 +43,55 @@ const ProfileScreen: React.FunctionComponent<Props> = ({
           <Text style={styles.pageTitle}>
             {route.params?.login ?? "Name Surname"}
           </Text>
-          <ProfilePostsList posts={posts} />
+          <SafeAreaView style={styles.listWrapper}>
+            <FlatList
+              style={{ marginBottom: 32 }}
+              data={posts}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                return (
+                  <View style={styles.listWrapper}>
+                    <View>
+                      <Image style={styles.picture} source={item.img} />
+                    </View>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <View style={styles.descrWraper}>
+                      <View style={styles.commentsWrapper}>
+                        <View style={styles.commentsWrapper}>
+                          <Feather
+                            style={styles.commentsIcon}
+                            name="message-circle"
+                            size={24}
+                            color="#FF6C00"
+                          />
+                          <Text style={styles.commentsCalc}>
+                            {item.comments}
+                          </Text>
+                        </View>
+                        <View
+                          style={{ ...styles.commentsWrapper, marginLeft: 24 }}
+                        >
+                          <Feather
+                            style={styles.commentsIcon}
+                            name="thumbs-up"
+                            size={24}
+                            color="#FF6C00"
+                          />
+                          <Text style={styles.commentsCalc}>
+                            {item?.likes ?? 333}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.locationWrapper}>
+                        <Octicons name="location" size={24} color="#BDBDBD" />
+                        <Text style={styles.locationText}>{item.location}</Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              }}
+            />
+          </SafeAreaView>
         </View>
       </ImageBackground>
     </View>
@@ -91,6 +140,55 @@ const styles = StyleSheet.create({
     textAlign: "center",
 
     marginBottom: 32,
+  },
+  listWrapper: {
+    backgroundColor: "#fff",
+    marginBottom: 32,
+  },
+  picture: {
+    height: 240,
+    width: "100%",
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  title: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#212121",
+    marginBottom: 8,
+  },
+  descrWraper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  commentsWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: "auto",
+  },
+  commentsIcon: {
+    marginRight: 6,
+  },
+  commentsCalc: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#212121",
+  },
+  locationWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  locationText: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#212121",
+    textDecorationStyle: "solid",
+    textDecorationLine: "underline",
+    textDecorationColor: "#212121",
+    marginLeft: 6,
   },
 });
 

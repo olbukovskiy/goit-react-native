@@ -11,9 +11,9 @@ import {
   Platform,
 } from "react-native";
 import { FontAwesome, Octicons, Feather } from "@expo/vector-icons";
-import { TabsParamList } from "../../../services/types";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-type Props = BottomTabScreenProps<TabsParamList, "CreatePost">;
+import { CreateParamList } from "../../Screens/mainScreen/CreatePostsScreen";
+import { StackScreenProps } from "@react-navigation/stack";
+type Props = StackScreenProps<CreateParamList, "Create">;
 
 const CreatePosts: React.FunctionComponent<Props> = () => {
   return (

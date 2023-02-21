@@ -1,9 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import ProfileScreen from "./ProfileScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
 import PostsScreen from "./PostsScreen";
-import { TouchableOpacity, Text } from "react-native";
-import { Feather, AntDesign } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { View } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../services/types";
@@ -12,8 +13,7 @@ const Tabs = createBottomTabNavigator();
 
 type Props = StackScreenProps<RootStackParamList, "Home">;
 
-const Home: React.FunctionComponent<Props> = ({ navigation, route }) => {
-  console.log(route);
+const Home: React.FunctionComponent<Props> = ({ navigation }) => {
   return (
     <Tabs.Navigator initialRouteName="PostsScreen">
       <Tabs.Screen
@@ -70,23 +70,27 @@ const Home: React.FunctionComponent<Props> = ({ navigation, route }) => {
             borderBottomColor: "#BDBDBD",
             borderBottomWidth: 1,
           },
-          headerLeft: () => {
-            return (
-              <TouchableOpacity
-                style={{ marginLeft: 16, alignItems: "center" }}
-                activeOpacity={0.8}
-                onPress={() =>
-                  navigation.navigate("Home", {
-                    screen: "PostsScreen",
-                  })
-                }
-              >
-                <AntDesign name="arrowleft" size={24} color="#212121" />
-              </TouchableOpacity>
-            );
-          },
+          // headerLeft: () => {
+          //   return (
+          //     <TouchableOpacity
+          //       style={{ marginLeft: 16, alignItems: "center" }}
+          //       activeOpacity={0.8}
+          //       onPress={() =>
+          //         navigation.navigate("Home", {
+          //           screen: "PostsScreen",
+          //         })
+          //       }
+          //     >
+          //       <AntDesign name="arrowleft" size={24} color="#212121" />
+          //     </TouchableOpacity>
+          //   );
+          // },
+          // tabBarStyle: {
+          //   display: "none",
+          // },
           tabBarStyle: {
-            display: "none",
+            height: 100,
+            backgroundColor: "#fff",
           },
           tabBarLabel: "",
           tabBarActiveTintColor: "#fff",

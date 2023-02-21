@@ -5,12 +5,16 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 
 import { Octicons, Feather } from "@expo/vector-icons";
 import { IProps } from "../../services/types";
 
-const PostsList: React.FunctionComponent<{ posts: IProps[] }> = ({ posts }) => {
+const PostsList: React.FunctionComponent<{
+  posts: IProps[];
+  navigate: any;
+}> = ({ posts, navigate }) => {
   return (
     <SafeAreaView style={styles.wrapper}>
       <FlatList
@@ -25,7 +29,10 @@ const PostsList: React.FunctionComponent<{ posts: IProps[] }> = ({ posts }) => {
               </View>
               <Text style={styles.title}>{item.title}</Text>
               <View style={styles.descrWraper}>
-                <View style={styles.commentsWrapper}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.commentsWrapper}
+                >
                   <Feather
                     style={styles.commentsIcon}
                     name="message-circle"
@@ -33,11 +40,14 @@ const PostsList: React.FunctionComponent<{ posts: IProps[] }> = ({ posts }) => {
                     color="#BDBDBD"
                   />
                   <Text style={styles.commentsCalc}>{item.comments}</Text>
-                </View>
-                <View style={styles.locationWrapper}>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.locationWrapper}
+                >
                   <Octicons name="location" size={24} color="#BDBDBD" />
                   <Text style={styles.locationText}>{item.location}</Text>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
           );

@@ -6,7 +6,6 @@ import {
   StackNavigationOptions,
 } from "@react-navigation/stack";
 
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -15,7 +14,6 @@ import { RootStackParamList } from "./services/types";
 import RegistrationScreen from "./src/Screens/authScreen/RegistrationScreen/RegistrationScreen";
 import LoginScreen from "./src/Screens/authScreen/LoginScreen/LoginScreen";
 import Home from "./src/Screens/mainScreen/Home";
-import CommentsScreen from "./src/Screens/mainScreen/CommentsScreen";
 
 SplashScreen.preventAutoHideAsync();
 const MainStack = createStackNavigator<RootStackParamList>();
@@ -66,11 +64,6 @@ export default function App() {
             options={options}
           />
           <MainStack.Screen name="Home" component={Home} options={options} />
-          <MainStack.Screen
-            name="Comment"
-            component={CommentsScreen}
-            options={{ title: "Комментарии", headerTitleAlign: "center" }}
-          />
         </MainStack.Navigator>
       </NavigationContainer>
     </View>

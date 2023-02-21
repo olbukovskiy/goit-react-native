@@ -18,15 +18,21 @@ export interface IReducerState {
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  Home: { screen: string; params?: { [prop: string]: any } } | undefined;
+  Home: undefined;
   Comment: undefined;
 };
 
 export type TabsParamList = {
-  PostsScreen: any;
+  PostsScreen: undefined;
   CreatePost: any;
   Profile: any;
   Login: undefined;
+};
+
+export type PostsStackParamList = {
+  Posts: { login: string; email?: string; password: string };
+  Comments: { postId: string };
+  Map: { postId: string };
 };
 
 export interface IProps {

@@ -82,7 +82,9 @@ const RegistrationScreen: React.FunctionComponent<Props> = ({ navigation }) => {
             style={styles.wrapper}
             behavior={Platform.OS === "ios" ? "padding" : undefined}
           >
-            <View style={{ marginBottom: isActive ? -175 : 0 }}>
+            <View
+              style={{ marginBottom: isActive ? -175 : 0, paddingBottom: 75 }}
+            >
               <View
                 style={[
                   styles.imageWrapper,
