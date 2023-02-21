@@ -29,6 +29,34 @@ export const posts: IProps[] = [
     comments: 300,
     location: "Ternopil",
   },
+  {
+    id: "3",
+    img: require("../../../assets/images/Rectangle2.png"),
+    title: "Sky",
+    comments: 300,
+    location: "Ternopil",
+  },
+  {
+    id: "4",
+    img: require("../../../assets/images/Rectangle2.png"),
+    title: "Sky",
+    comments: 300,
+    location: "Ternopil",
+  },
+  {
+    id: "5",
+    img: require("../../../assets/images/Rectangle2.png"),
+    title: "Sky",
+    comments: 300,
+    location: "Ternopil",
+  },
+  {
+    id: "6",
+    img: require("../../../assets/images/Rectangle2.png"),
+    title: "Sky",
+    comments: 300,
+    location: "Ternopil",
+  },
 ];
 
 const Posts: React.FunctionComponent<Props> = ({ route, navigation }) => {

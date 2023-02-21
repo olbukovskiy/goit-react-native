@@ -85,9 +85,7 @@ const Home: React.FunctionComponent<Props> = ({ navigation }) => {
           //     </TouchableOpacity>
           //   );
           // },
-          // tabBarStyle: {
-          //   display: "none",
-          // },
+
           tabBarStyle: {
             height: 100,
             backgroundColor: "#fff",
