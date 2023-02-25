@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
     height: 60,
     borderRadius: 60 / 2,
     backgroundColor: "#fff",
+    opacity: 0.3,
   },
   icon: {
     position: "absolute",

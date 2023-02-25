@@ -8,58 +8,14 @@ import {
 } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { Octicons, Feather } from "@expo/vector-icons";
+import { useUser } from "../../hooks/hooks";
 import { PostsStackParamList } from "../../../services/types";
-import { IProps } from "../../../services/types";
 import { styles } from "./styles";
 
 type Props = StackScreenProps<PostsStackParamList, "Posts">;
 
-export const posts: IProps[] = [
-  {
-    id: "1",
-    img: require("../../../assets/images/Rectangle1.png"),
-    title: "Forrest",
-    comments: 100,
-    location: "Harkiv",
-  },
-  {
-    id: "2",
-    img: require("../../../assets/images/Rectangle2.png"),
-    title: "Sky",
-    comments: 300,
-    location: "Ternopil",
-  },
-  {
-    id: "3",
-    img: require("../../../assets/images/Rectangle2.png"),
-    title: "Sky",
-    comments: 300,
-    location: "Ternopil",
-  },
-  {
-    id: "4",
-    img: require("../../../assets/images/Rectangle2.png"),
-    title: "Sky",
-    comments: 300,
-    location: "Ternopil",
-  },
-  {
-    id: "5",
-    img: require("../../../assets/images/Rectangle2.png"),
-    title: "Sky",
-    comments: 300,
-    location: "Ternopil",
-  },
-  {
-    id: "6",
-    img: require("../../../assets/images/Rectangle2.png"),
-    title: "Sky",
-    comments: 300,
-    location: "Ternopil",
-  },
-];
-
 const Posts: React.FunctionComponent<Props> = ({ route, navigation }) => {
+  const { postsState } = useUser();
   return (
     <View style={styles.container}>
       <View style={styles.profileWrapper}>
@@ -78,7 +34,7 @@ const Posts: React.FunctionComponent<Props> = ({ route, navigation }) => {
       <SafeAreaView style={styles.wrapper}>
         <FlatList
           style={{ marginBottom: 32 }}
-          data={posts}
+          data={postsState}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (

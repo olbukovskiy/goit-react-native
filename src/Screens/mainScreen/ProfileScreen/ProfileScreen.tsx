@@ -11,7 +11,7 @@ import {
 import { AntDesign, Feather, Octicons } from "@expo/vector-icons";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { TabsParamList } from "../../../../services/types";
-import { posts } from "../../../components/Posts/Posts";
+import { useUser } from "../../../hooks/hooks";
 import { styles } from "./styles";
 
 type Props = BottomTabScreenProps<TabsParamList, "Profile">;
@@ -20,6 +20,7 @@ const ProfileScreen: React.FunctionComponent<Props> = ({
   route,
   navigation,
 }) => {
+  const { postsState } = useUser();
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -48,7 +49,7 @@ const ProfileScreen: React.FunctionComponent<Props> = ({
           <SafeAreaView style={styles.listWrapper}>
             <FlatList
               style={{ marginBottom: 32 }}
-              data={posts}
+              data={postsState}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => {
                 return (

@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { TouchableOpacity } from "react-native";
+import { Platform, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { View } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
@@ -37,7 +37,8 @@ const Home: React.FunctionComponent<Props> = ({ navigation }) => {
             borderBottomWidth: 1,
           },
           tabBarStyle: {
-            height: 100,
+            height: 73,
+            paddingTop: Platform.OS === "ios" ? 25 : 0,
             backgroundColor: "#fff",
           },
           tabBarLabel: "",
@@ -88,7 +89,8 @@ const Home: React.FunctionComponent<Props> = ({ navigation }) => {
           // },
 
           tabBarStyle: {
-            height: 100,
+            height: 73,
+            paddingTop: Platform.OS === "ios" ? 25 : 0,
             backgroundColor: "#fff",
           },
           tabBarLabel: "",
@@ -118,7 +120,8 @@ const Home: React.FunctionComponent<Props> = ({ navigation }) => {
         options={{
           headerShown: false,
           tabBarStyle: {
-            height: 100,
+            height: 73,
+            paddingTop: Platform.OS === "ios" ? 25 : 0,
             backgroundColor: "#fff",
           },
           tabBarLabel: "",

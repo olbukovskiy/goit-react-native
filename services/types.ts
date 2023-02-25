@@ -2,6 +2,7 @@ export interface IState {
   email: string;
   login: string;
   password: string;
+  avatar?: any;
 }
 
 export interface IPasswordSettings {
@@ -27,9 +28,7 @@ export type RootStackParamList = {
 };
 
 export type TabsParamList = {
-  PostsScreen:
-    | { login: string; email: string; password: string; yop?: any }
-    | undefined;
+  PostsScreen: { login: string; email: string; password: string } | undefined;
   CreatePost: any;
   Profile: any;
   Login: undefined;
@@ -45,7 +44,8 @@ export interface IProps {
   id: string;
   img: any;
   title: string;
-  comments: number;
+  comments?: number;
   location: string;
   likes?: number;
+  mapLocation: { latitude: number; longitude: number };
 }
