@@ -26,7 +26,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   contentImage: {
-    flex: 1,
+    borderRadius: 16,
+    width: "100%",
+    height: "100%",
   },
   addIcon: {
     position: "absolute",

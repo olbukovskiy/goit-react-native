@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import MapView, { Marker } from "react-native-maps";
 
@@ -14,8 +14,8 @@ const MapScreen: React.FunctionComponent<Props> = ({ route, navigation }) => {
     const routeObj = postsState.find((post) => {
       return post.id === route.params.postId;
     });
+
     const currentMapLocation = routeObj!.mapLocation;
-    console.log(currentMapLocation);
     return currentMapLocation;
   });
 
@@ -34,7 +34,7 @@ const MapScreen: React.FunctionComponent<Props> = ({ route, navigation }) => {
       <MapView
         style={styles.mapStyle}
         region={{
-          ...postLocationState,
+          ...(postLocationState as { latitude: number; longitude: number }),
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}

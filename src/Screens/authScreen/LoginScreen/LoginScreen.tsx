@@ -11,20 +11,11 @@ import {
 } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { useState, useReducer } from "react";
-import {
-  IState,
-  IPasswordSettings,
-  IReducerState,
-} from "../../../../services/types";
+import { IPasswordSettings, IReducerState } from "../../../../services/types";
 import { reducer } from "../../../../services/functions";
 import { RootStackParamList } from "../../../../services/types";
+import { useUser } from "../../../hooks/hooks";
 import styles from "./styles";
-
-const initialState: IState = {
-  email: "",
-  login: "",
-  password: "",
-};
 
 const reducerState: IReducerState = {
   email: false,
@@ -40,11 +31,13 @@ const passwordSettings: IPasswordSettings = {
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
-  const [formState, setFormState] = useState<IState>(initialState);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] =
     useState<IPasswordSettings>(passwordSettings);
   const [state, dispatch] = useReducer(reducer, reducerState);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { setAuthState } = useUser();
 
   const keyboardCloseHandler = () => {
     setIsActive(false);
@@ -54,11 +47,10 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
 
   const submitHandler = () => {
     keyboardCloseHandler();
-    setFormState(initialState);
-    console.log(formState);
+    setAuthState({ email, password });
     navigation.navigate("Home", {
       screen: "PostsScreen",
-      params: { ...formState },
+      params: { email, password },
     });
   };
 
@@ -97,7 +89,7 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                     }}
                     placeholder="Адресс электронной почты"
                     placeholderTextColor="#BDBDBD"
-                    value={formState.email}
+                    value={email}
                     onFocus={() => {
                       setIsActive(true);
                       dispatch({ type: "login", payload: true });
@@ -106,12 +98,7 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                       dispatch({ type: "unset", payload: false });
                       setIsActive(false);
                     }}
-                    onChangeText={(value) =>
-                      setFormState((prevState) => ({
-                        ...prevState,
-                        email: value,
-                      }))
-                    }
+                    onChangeText={(value) => setEmail(value)}
                   />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -125,7 +112,7 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                     placeholder="Пароль"
                     placeholderTextColor="#BDBDBD"
                     secureTextEntry={isPasswordVisible.isVisible}
-                    value={formState.password}
+                    value={password}
                     onFocus={() => {
                       setIsActive(true);
                       dispatch({ type: "password", payload: true });
@@ -134,12 +121,7 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                       dispatch({ type: "unset", payload: false });
                       setIsActive(false);
                     }}
-                    onChangeText={(value) =>
-                      setFormState((prevState) => ({
-                        ...prevState,
-                        password: value,
-                      }))
-                    }
+                    onChangeText={(value) => setPassword(value)}
                   />
                   <Text
                     style={styles.showHide}

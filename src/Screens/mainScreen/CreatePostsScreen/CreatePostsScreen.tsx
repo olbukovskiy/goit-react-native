@@ -10,31 +10,28 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { Camera, CameraProps, CameraType } from "expo-camera";
+import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 import { FontAwesome, Octicons, Feather, AntDesign } from "@expo/vector-icons";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 import { useUser } from "../../../hooks/hooks";
-import { IProps, TabsParamList } from "../../../../services/types";
+import { TabsParamList, LocationType } from "../../../../services/types";
 import { styles } from "./styles";
-import * as Location from "expo-location";
 
 type Props = BottomTabScreenProps<TabsParamList, "CreatePost">;
 
 const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
-  const { setPostsState, hideTab, showTab } = useUser();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [cameraRef, setCameraRef] = useState<any>(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [cameraRef, setCameraRef] = useState<Camera | null>(null);
+  const [type, setType] = useState(CameraType.back);
   const [photoPath, setPhotoPath] = useState<string | null>(null);
   const [postTitle, setPostTitle] = useState<string>("");
   const [photoLocation, setPhotoLocation] = useState<string>("");
-  const [mapLocation, setMapLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
+  const [mapLocation, setMapLocation] = useState<LocationType | null>(null);
   const [_, setErrorMsg] = useState<string | null>(null);
+  const { setPostsState } = useUser();
 
   useEffect(() => {
     const statusSetter = async () => {
@@ -60,7 +57,7 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
-      const coords = {
+      const coords: LocationType = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       };
@@ -147,9 +144,9 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
                           <TouchableOpacity
                             onPress={() =>
                               setType(
-                                type === Camera.Constants.Type.back
-                                  ? Camera.Constants.Type.front
-                                  : Camera.Constants.Type.back
+                                type === CameraType.back
+                                  ? CameraType.front
+                                  : CameraType.back
                               )
                             }
                             activeOpacity={0.8}
@@ -259,7 +256,7 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
                   }
 
                   if (photoPath && postTitle) {
-                    setPostsState((prevPosts: IProps[]) => {
+                    setPostsState((prevPosts) => {
                       return [
                         ...prevPosts,
                         {

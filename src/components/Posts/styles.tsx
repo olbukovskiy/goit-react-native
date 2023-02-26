@@ -28,6 +28,7 @@ export const styles = StyleSheet.create({
     resizeMode: "cover",
     width: 60,
     height: 60,
+    backgroundColor: "tomato",
   },
   name: {
     fontFamily: "Roboto-Bold",

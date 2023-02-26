@@ -27,7 +27,10 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
   },
   contentImage: {
-    flex: 1,
+    resizeMode: "cover",
+    width: "100%",
+    height: "100%",
+    borderRadius: 16,
   },
   addIcon: {
     position: "absolute",

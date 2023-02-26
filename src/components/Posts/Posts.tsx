@@ -14,20 +14,19 @@ import { styles } from "./styles";
 
 type Props = StackScreenProps<PostsStackParamList, "Posts">;
 
-const Posts: React.FunctionComponent<Props> = ({ route, navigation }) => {
-  const { postsState } = useUser();
+const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
+  const { postsState, authState } = useUser();
+
   return (
     <View style={styles.container}>
       <View style={styles.profileWrapper}>
         <View style={styles.imageThumb}>
-          <Image source={require("../../../assets/images/User.png")} />
+          <Image style={styles.image} source={authState.avatar} />
         </View>
         <View>
-          <Text style={styles.name}>
-            {route.params?.login ?? "Name Surname"}
-          </Text>
+          <Text style={styles.name}>{authState.login ?? "Name Surname"}</Text>
           <Text style={styles.email}>
-            {route.params?.email ?? "email@mail.com"}
+            {authState.email ?? "email@mail.com"}
           </Text>
         </View>
       </View>

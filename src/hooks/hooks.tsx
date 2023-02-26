@@ -1,12 +1,20 @@
-import { createContext, useContext, useState } from "react";
-import { IProps } from "../../services/types";
+import {
+  createContext,
+  useContext,
+  useState,
+  SetStateAction,
+  Dispatch,
+} from "react";
+import { IProps, IState } from "../../services/types";
 
 type GlobalContext = {
   isShow: boolean;
   showTab: () => void;
   hideTab: () => void;
   postsState: IProps[];
-  setPostsState: any;
+  setPostsState: Dispatch<SetStateAction<IProps[]>>;
+  authState: IState;
+  setAuthState: Dispatch<SetStateAction<IState>>;
 };
 
 const UserContext = createContext<GlobalContext>({
@@ -15,6 +23,12 @@ const UserContext = createContext<GlobalContext>({
   hideTab: () => {},
   postsState: [],
   setPostsState: () => {},
+  authState: {
+    login: "Name Surname",
+    email: "email@mail.com",
+    password: "hallo",
+  },
+  setAuthState: () => {},
 });
 
 export const useUser = () => useContext(UserContext);
@@ -36,11 +50,19 @@ const initialState: IProps[] = [
   },
 ];
 
+const authInitState: IState = {
+  login: "Name Surname",
+  email: "email@mail.com",
+  avatar: require("../../assets/images/User.png"),
+  password: "hallo",
+};
+
 const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isShow, setIsShow] = useState(true);
   const [postsState, setPostsState] = useState<IProps[]>(initialState);
+  const [authState, setAuthState] = useState<IState>(authInitState);
 
   const showTab = () => {
     setIsShow(true);
@@ -52,7 +74,15 @@ const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
 
   return (
     <UserContext.Provider
-      value={{ isShow, showTab, hideTab, postsState, setPostsState }}
+      value={{
+        isShow,
+        showTab,
+        hideTab,
+        postsState,
+        setPostsState,
+        authState,
+        setAuthState,
+      }}
     >
       {children}
     </UserContext.Provider>

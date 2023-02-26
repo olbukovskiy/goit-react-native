@@ -1,8 +1,8 @@
-import { IReducerState } from "./types";
+import { IReducerState, ActionType } from "./types";
 
 export function reducer(
   state: IReducerState,
-  action: { type: string; payload: boolean }
+  action: ActionType
 ): IReducerState {
   switch (action.type) {
     case "email":
