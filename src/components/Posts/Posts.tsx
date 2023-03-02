@@ -56,7 +56,9 @@ const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
                       size={24}
                       color="#BDBDBD"
                     />
-                    <Text style={styles.commentsCalc}>{item.comments}</Text>
+                    <Text style={styles.commentsCalc}>
+                      {item.comments?.length}
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() =>

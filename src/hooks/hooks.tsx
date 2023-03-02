@@ -5,7 +5,7 @@ import {
   SetStateAction,
   Dispatch,
 } from "react";
-import { IProps, IState } from "../../services/types";
+import { IComment, IProps, IState } from "../../services/types";
 
 type GlobalContext = {
   isShow: boolean;
@@ -15,6 +15,8 @@ type GlobalContext = {
   setPostsState: Dispatch<SetStateAction<IProps[]>>;
   authState: IState;
   setAuthState: Dispatch<SetStateAction<IState>>;
+  comments: IComment[];
+  setComments: Dispatch<SetStateAction<IComment[]>>;
 };
 
 const UserContext = createContext<GlobalContext>({
@@ -29,6 +31,8 @@ const UserContext = createContext<GlobalContext>({
     password: "hallo",
   },
   setAuthState: () => {},
+  comments: [],
+  setComments: () => {},
 });
 
 export const useUser = () => useContext(UserContext);
@@ -38,15 +42,66 @@ const initialState: IProps[] = [
     id: "1",
     img: require("../../assets/images/Rectangle1.png"),
     title: "Forrest",
-    comments: 100,
+    comments: [],
     location: "Harkiv",
   },
   {
     id: "2",
     img: require("../../assets/images/Rectangle2.png"),
     title: "Sky",
-    comments: 300,
+    comments: [],
     location: "Ternopil",
+  },
+];
+
+const initialComments: IComment[] = [
+  {
+    id: "1",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
+  },
+  {
+    id: "2",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
+  },
+  {
+    id: "3",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
+  },
+  {
+    id: "4",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
+  },
+  {
+    id: "5",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
+  },
+  {
+    id: "6",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
+  },
+  {
+    id: "7",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
+  },
+  {
+    id: "8",
+    author: "name",
+    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
+    posted: "1.1.2011",
   },
 ];
 
@@ -63,6 +118,7 @@ const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
   const [isShow, setIsShow] = useState(true);
   const [postsState, setPostsState] = useState<IProps[]>(initialState);
   const [authState, setAuthState] = useState<IState>(authInitState);
+  const [comments, setComments] = useState(initialComments);
 
   const showTab = () => {
     setIsShow(true);
@@ -82,6 +138,8 @@ const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
         setPostsState,
         authState,
         setAuthState,
+        comments,
+        setComments,
       }}
     >
       {children}

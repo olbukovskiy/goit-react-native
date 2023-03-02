@@ -50,11 +50,18 @@ export type LocationType = {
   longitude: number;
 };
 
+export interface IComment {
+  id: string;
+  author: string;
+  content: string;
+  posted: string;
+}
+
 export interface IProps {
   id: string;
   img: { uri: string };
   title: string;
-  comments?: number;
+  comments?: IComment[];
   location: string;
   likes?: number;
   mapLocation?: LocationType | null;

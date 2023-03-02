@@ -5,76 +5,22 @@ import {
   SafeAreaView,
   TextInput,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";
-import { PostsStackParamList } from "../../../../services/types";
+import { IComment, PostsStackParamList } from "../../../../services/types";
 import { styles } from "./styles";
 import { useUser } from "../../../hooks/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Props = StackScreenProps<PostsStackParamList, "Comments">;
 
-interface IComment {
-  id: string;
-  author: string;
-  content: string;
-  posted: string;
-}
-
-const comments: IComment[] = [
-  {
-    id: "1",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-  {
-    id: "2",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-  {
-    id: "3",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-  {
-    id: "4",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-  {
-    id: "5",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-  {
-    id: "6",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-  {
-    id: "7",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-  {
-    id: "8",
-    author: "name",
-    content: "loremloremdqdqwdqwdqwdqwdqwdqwdqwd",
-    posted: "1.1.2011",
-  },
-];
-
 const CommentsScreen: React.FunctionComponent<Props> = ({ navigation }) => {
-  const { showTab, hideTab } = useUser();
+  const [comment, setComment] = useState("");
+  const { showTab, hideTab, comments, setComments } = useUser();
+
+  const submitHandler = () => {};
 
   useEffect(() => {
     navigation.addListener("focus", hideTab);
@@ -116,8 +62,9 @@ const CommentsScreen: React.FunctionComponent<Props> = ({ navigation }) => {
             style={styles.input}
             placeholder="Комментировать..."
             placeholderTextColor="#BDBDBD"
+            onChangeText={(value) => setComment(value)}
           />
-          <View style={styles.iconWrapper}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.iconWrapper}>
             <AntDesign
               style={[
                 styles.icon,
@@ -127,7 +74,7 @@ const CommentsScreen: React.FunctionComponent<Props> = ({ navigation }) => {
               size={24}
               color="#fff"
             />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
