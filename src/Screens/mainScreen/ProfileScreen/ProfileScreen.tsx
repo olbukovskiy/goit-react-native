@@ -13,17 +13,40 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { AntDesign, Feather, Octicons, FontAwesome } from "@expo/vector-icons";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { IState, TabsParamList } from "../../../../services/types";
+import { TabsParamList } from "../../../../services/types";
 import { useUser } from "../../../hooks/hooks";
 import { styles } from "./styles";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
+import {
+  authSignOutUser,
+  authUpdateUserProfilePicture,
+} from "../../../redux/auth/operations";
+import { selectUserData } from "../../../redux/auth/selectors";
+import { uploadPicture } from "../../../../firebase/config";
+import { async } from "@firebase/util";
 
 type Props = BottomTabScreenProps<TabsParamList, "Profile">;
 
-const ProfileScreen: React.FunctionComponent<Props> = ({ navigation }) => {
+const ProfileScreen: React.FunctionComponent<Props> = () => {
   const [_, setHasPermission] = useState<boolean>(false);
   const [cameraRef, setCameraRef] = useState<Camera | null>(null);
   const [showCamera, setShowCamera] = useState<boolean>(false);
-  const { postsState, authState, setAuthState } = useUser();
+  const { postsState } = useUser();
+  const [picturePath, setPicturePath] = useState<string>("");
+
+  const { avatar, login } = useAppSelector(selectUserData);
+  const dispatch = useAppDispatch();
+
+  const logOutHandler = () => {
+    dispatch(authSignOutUser());
+  };
+
+  const changeUserProfilePicture = async () => {
+    const avatar = await uploadPicture(picturePath, "profile");
+    if (typeof avatar === "string") {
+      dispatch(authUpdateUserProfilePicture(avatar.toString()));
+    }
+  };
 
   useEffect(() => {
     const statusSetter = async () => {
@@ -55,7 +78,10 @@ const ProfileScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                   { transform: [{ translateX: -50 }] },
                 ]}
               >
-                <Image style={styles.contentImage} source={authState.avatar} />
+                <Image
+                  style={styles.contentImage}
+                  source={{ uri: avatar as string }}
+                />
                 <TouchableOpacity
                   onPress={() => setShowCamera(true)}
                   style={styles.addIcon}
@@ -65,15 +91,13 @@ const ProfileScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                onPress={() => navigation.navigate("Login")}
+                onPress={logOutHandler}
                 activeOpacity={0.8}
                 style={{ position: "absolute", right: 16, top: 22 }}
               >
                 <Feather name="log-out" size={24} color="#BDBDBD" />
               </TouchableOpacity>
-              <Text style={styles.pageTitle}>
-                {authState.login ?? "Name Surname"}
-              </Text>
+              <Text style={styles.pageTitle}>{login ?? "Name Surname"}</Text>
               <SafeAreaView style={styles.listWrapper}>
                 <FlatList
                   style={{ marginBottom: 32 }}
@@ -96,7 +120,7 @@ const ProfileScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                                 color="#FF6C00"
                               />
                               <Text style={styles.commentsCalc}>
-                                {item.comments}
+                                {item.comments?.length}
                               </Text>
                             </View>
                             <View
@@ -157,9 +181,8 @@ const ProfileScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                   if (cameraRef) {
                     const { uri } = await cameraRef.takePictureAsync();
                     await MediaLibrary.createAssetAsync(uri);
-                    setAuthState((prevState: IState) => {
-                      return { ...prevState, avatar: { uri: uri } };
-                    });
+                    setPicturePath(uri);
+                    changeUserProfilePicture();
                     setShowCamera(false);
                   }
                 }}

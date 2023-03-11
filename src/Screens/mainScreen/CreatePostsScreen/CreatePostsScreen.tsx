@@ -253,6 +253,7 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
                 onPress={() => {
                   if (!photoPath || !postTitle) {
                     console.log("Нужно заполнить все обязательные поля");
+                    return;
                   }
 
                   if (photoPath && postTitle) {

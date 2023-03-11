@@ -21,6 +21,9 @@ import styles from "./styles";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { useUser } from "../../../hooks/hooks";
+import { authSignUpUser } from "../../../redux/auth/operations";
+import { useAppDispatch } from "../../../hooks/redux-hooks";
+import { uploadPicture } from "../../../../firebase/config";
 
 const reducerState: IReducerState = {
   email: false,
@@ -50,7 +53,8 @@ const RegistrationScreen: React.FunctionComponent<Props> = ({ navigation }) => {
   const [photoPath, setPhotoPath] = useState<string>("");
   const [showCamera, setShowCamera] = useState(false);
 
-  const { setAuthState, authState } = useUser();
+  const dispatchOperator = useAppDispatch();
+  const { setAuthState } = useUser();
 
   const keyboardCloseHandler = () => {
     setIsActive(false);
@@ -58,14 +62,20 @@ const RegistrationScreen: React.FunctionComponent<Props> = ({ navigation }) => {
     dispatch({ type: "unset", payload: false });
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     keyboardCloseHandler();
     setAuthState({ login, email, password, avatar: { uri: photoPath } });
 
-    navigation.navigate("Home", {
-      screen: "PostsScreen",
-      params: { ...authState },
-    });
+    const avatar = await uploadPicture(photoPath, "profile");
+
+    dispatchOperator(
+      authSignUpUser({
+        login,
+        email,
+        password,
+        avatar: avatar,
+      })
+    );
   };
 
   const changePasswordSettings = () => {
@@ -115,14 +125,12 @@ const RegistrationScreen: React.FunctionComponent<Props> = ({ navigation }) => {
                       { transform: [{ translateX: -60 }] },
                     ]}
                   >
-                    <Image
-                      style={styles.contentImage}
-                      source={
-                        photoPath.length === 0
-                          ? require("../../../../assets/images/User.png")
-                          : { uri: photoPath }
-                      }
-                    />
+                    {photoPath.length !== 0 && (
+                      <Image
+                        style={styles.contentImage}
+                        source={{ uri: photoPath }}
+                      />
+                    )}
                     <TouchableOpacity
                       style={styles.addIcon}
                       activeOpacity={0.8}

@@ -16,6 +16,8 @@ import { reducer } from "../../../../services/functions";
 import { RootStackParamList } from "../../../../services/types";
 import { useUser } from "../../../hooks/hooks";
 import styles from "./styles";
+import { useAppDispatch } from "../../../hooks/redux-hooks";
+import { authSignInUser } from "../../../redux/auth/operations";
 
 const reducerState: IReducerState = {
   email: false,
@@ -39,6 +41,8 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { setAuthState } = useUser();
 
+  const dispatchOperator = useAppDispatch();
+
   const keyboardCloseHandler = () => {
     setIsActive(false);
     Keyboard.dismiss();
@@ -48,10 +52,7 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
   const submitHandler = () => {
     keyboardCloseHandler();
     setAuthState({ email, password });
-    navigation.navigate("Home", {
-      screen: "PostsScreen",
-      params: { email, password },
-    });
+    dispatchOperator(authSignInUser({ email, password }));
   };
 
   const changePasswordSettings = () => {

@@ -11,23 +11,24 @@ import { Octicons, Feather } from "@expo/vector-icons";
 import { useUser } from "../../hooks/hooks";
 import { PostsStackParamList } from "../../../services/types";
 import { styles } from "./styles";
+import { useAppSelector } from "../../hooks/redux-hooks";
+import { selectUserData } from "../../redux/auth/selectors";
 
 type Props = StackScreenProps<PostsStackParamList, "Posts">;
 
 const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
-  const { postsState, authState } = useUser();
+  const { postsState } = useUser();
+  const { email, login, avatar } = useAppSelector(selectUserData);
 
   return (
     <View style={styles.container}>
       <View style={styles.profileWrapper}>
         <View style={styles.imageThumb}>
-          <Image style={styles.image} source={authState.avatar} />
+          <Image style={styles.image} source={{ uri: avatar as string }} />
         </View>
         <View>
-          <Text style={styles.name}>{authState.login ?? "Name Surname"}</Text>
-          <Text style={styles.email}>
-            {authState.email ?? "email@mail.com"}
-          </Text>
+          <Text style={styles.name}>{login ?? "Name Surname"}</Text>
+          <Text style={styles.email}>{email ?? "email@mail.com"}</Text>
         </View>
       </View>
       <SafeAreaView style={styles.wrapper}>

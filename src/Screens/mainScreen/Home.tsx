@@ -7,12 +7,20 @@ import ProfileScreen from "./ProfileScreen/ProfileScreen";
 import CreatePostsScreen from "./CreatePostsScreen/CreatePostsScreen";
 import PostsScreen from "./PostsScreen";
 import { RootStackParamList, TabsParamList } from "../../../services/types";
+import { useAppDispatch } from "../../hooks/redux-hooks";
+import { authSignOutUser } from "../../redux/auth/operations";
 
 const Tabs = createBottomTabNavigator<TabsParamList>();
 
 type Props = StackScreenProps<RootStackParamList, "Home">;
 
 const Home: React.FunctionComponent<Props> = ({ navigation }) => {
+  const dispatch = useAppDispatch();
+
+  const logOutHandler = () => {
+    dispatch(authSignOutUser());
+  };
+
   return (
     <Tabs.Navigator initialRouteName="PostsScreen">
       <Tabs.Screen
@@ -24,7 +32,7 @@ const Home: React.FunctionComponent<Props> = ({ navigation }) => {
           headerTitleAlign: "center",
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
+              onPress={logOutHandler}
               activeOpacity={0.8}
               style={{ marginRight: 16 }}
             >
@@ -71,22 +79,6 @@ const Home: React.FunctionComponent<Props> = ({ navigation }) => {
             borderBottomColor: "#BDBDBD",
             borderBottomWidth: 1,
           },
-          // headerLeft: () => {
-          //   return (
-          //     <TouchableOpacity
-          //       style={{ marginLeft: 16, alignItems: "center" }}
-          //       activeOpacity={0.8}
-          //       onPress={() =>
-          //         navigation.navigate("Home", {
-          //           screen: "PostsScreen",
-          //         })
-          //       }
-          //     >
-          //       <AntDesign name="arrowleft" size={24} color="#212121" />
-          //     </TouchableOpacity>
-          //   );
-          // },
-
           tabBarStyle: {
             height: 73,
             paddingTop: Platform.OS === "ios" ? 25 : 0,

@@ -1,27 +1,18 @@
 <script src="http://localhost:8097"></script>;
 import { StyleSheet, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import {
-  createStackNavigator,
-  StackNavigationOptions,
-} from "@react-navigation/stack";
 
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { Provider } from "react-redux";
+import { store } from "./src/redux/store";
 
 import { useState, useEffect, useCallback } from "react";
-import { RootStackParamList } from "./services/types";
-import RegistrationScreen from "./src/Screens/authScreen/RegistrationScreen/RegistrationScreen";
-import LoginScreen from "./src/Screens/authScreen/LoginScreen/LoginScreen";
-import Home from "./src/Screens/mainScreen/Home";
+
 import UserProvider from "./src/hooks/hooks";
 
-SplashScreen.preventAutoHideAsync();
-const MainStack = createStackNavigator<RootStackParamList>();
+import Main from "./src/components/Main";
 
-const options: StackNavigationOptions = {
-  headerShown: false,
-};
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [isReady, setIsReady] = useState<boolean>(false);
@@ -51,25 +42,13 @@ export default function App() {
   if (!isReady) return null;
 
   return (
-    <UserProvider>
-      <View style={styles.container} onLayout={onLayoutRootView}>
-        <NavigationContainer>
-          <MainStack.Navigator initialRouteName="Login">
-            <MainStack.Screen
-              name="Login"
-              component={LoginScreen}
-              options={options}
-            />
-            <MainStack.Screen
-              name="Register"
-              component={RegistrationScreen}
-              options={options}
-            />
-            <MainStack.Screen name="Home" component={Home} options={options} />
-          </MainStack.Navigator>
-        </NavigationContainer>
-      </View>
-    </UserProvider>
+    <Provider store={store}>
+      <UserProvider>
+        <View style={styles.container} onLayout={onLayoutRootView}>
+          <Main />
+        </View>
+      </UserProvider>
+    </Provider>
   );
 }
 
