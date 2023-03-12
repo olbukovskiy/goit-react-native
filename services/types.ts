@@ -21,6 +21,11 @@ export type ActionType = {
   payload: boolean;
 };
 
+export type LocationType = {
+  latitude: number;
+  longitude: number;
+};
+
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
@@ -42,12 +47,7 @@ export type TabsParamList = {
 export type PostsStackParamList = {
   Posts: { login: string; email?: string; password: string };
   Comments: { postId: string };
-  Map: { postId: string };
-};
-
-export type LocationType = {
-  latitude: number;
-  longitude: number;
+  Map: { location: LocationType };
 };
 
 export interface IComment {

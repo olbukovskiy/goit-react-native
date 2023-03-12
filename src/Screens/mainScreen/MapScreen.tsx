@@ -4,20 +4,13 @@ import type { StackScreenProps } from "@react-navigation/stack";
 import MapView, { Marker } from "react-native-maps";
 
 import { useUser } from "../../hooks/hooks";
-import { PostsStackParamList } from "../../../services/types";
+import { LocationType, PostsStackParamList } from "../../../services/types";
 
 type Props = StackScreenProps<PostsStackParamList, "Map">;
 
 const MapScreen: React.FunctionComponent<Props> = ({ route, navigation }) => {
-  const { hideTab, showTab, postsState } = useUser();
-  const [postLocationState] = useState(() => {
-    const routeObj = postsState.find((post) => {
-      return post.id === route.params.postId;
-    });
-
-    const currentMapLocation = routeObj!.mapLocation;
-    return currentMapLocation;
-  });
+  const { hideTab, showTab } = useUser();
+  const postLocationState = route.params.location;
 
   useEffect(() => {
     navigation.addListener("focus", hideTab);
@@ -34,7 +27,7 @@ const MapScreen: React.FunctionComponent<Props> = ({ route, navigation }) => {
       <MapView
         style={styles.mapStyle}
         region={{
-          ...(postLocationState as { latitude: number; longitude: number }),
+          ...(postLocationState as LocationType),
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}

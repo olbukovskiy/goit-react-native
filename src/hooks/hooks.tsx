@@ -5,11 +5,9 @@ import {
   SetStateAction,
   Dispatch,
 } from "react";
-import { IComment, IState } from "../../services/types";
+import { IComment } from "../../services/types";
 
 type GlobalContext = {
-  isCreated?: number;
-  setIsCreated: Dispatch<SetStateAction<number>>;
   isShow: boolean;
   showTab: () => void;
   hideTab: () => void;
@@ -19,14 +17,12 @@ type GlobalContext = {
 };
 
 const UserContext = createContext<GlobalContext>({
-  isCreated: 0,
   isShow: true,
   showTab: () => {},
   hideTab: () => {},
 
   comments: [],
   setComments: () => {},
-  setIsCreated: () => {},
 });
 
 export const useUser = () => useContext(UserContext);
@@ -85,9 +81,7 @@ const initialComments: IComment[] = [
 const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isCreated, setIsCreated] = useState(0);
   const [isShow, setIsShow] = useState(true);
-
   const [comments, setComments] = useState(initialComments);
 
   const showTab = () => {
@@ -107,8 +101,6 @@ const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
 
         comments,
         setComments,
-        isCreated,
-        setIsCreated,
       }}
     >
       {children}

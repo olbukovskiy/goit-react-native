@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, getFirestore } from "firebase/firestore";
 
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
@@ -61,17 +61,6 @@ export const uploadData = async (post: IPost) => {
     const postRef = await addDoc(postsCollection, post);
 
     return postRef.id;
-  } catch (error) {
-    const newError = error as { message: string };
-    console.log(newError.message);
-  }
-};
-
-export const readDataFromDB = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "posts"));
-
-    return querySnapshot;
   } catch (error) {
     const newError = error as { message: string };
     console.log(newError.message);

@@ -36,7 +36,7 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
   const [postTitle, setPostTitle] = useState<string>("");
   const [photoLocation, setPhotoLocation] = useState<string>("");
   const [mapLocation, setMapLocation] = useState<LocationType | null>(null);
-  const { setIsCreated } = useUser();
+
   const userId = useAppSelector(selectUserId);
 
   const submitHandler = async () => {
@@ -61,7 +61,6 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
       const postId = await uploadData(post);
       console.log(postId);
 
-      setIsCreated((prevState) => prevState + 1);
       setPhotoPath(null);
       setPostTitle("");
       setPhotoLocation("");

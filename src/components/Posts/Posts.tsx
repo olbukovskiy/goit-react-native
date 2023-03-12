@@ -9,38 +9,39 @@ import {
 } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { Octicons, Feather } from "@expo/vector-icons";
+import { collection, onSnapshot } from "firebase/firestore";
 
-import { IPost, PostsStackParamList } from "../../../services/types";
+import {
+  IPost,
+  LocationType,
+  PostsStackParamList,
+} from "../../../services/types";
 import { styles } from "./styles";
 import { useAppSelector } from "../../hooks/redux-hooks";
 import { selectUserData, selectUserId } from "../../redux/auth/selectors";
-import { readDataFromDB } from "../../../firebase/config";
-import { useUser } from "../../hooks/hooks";
+import { db } from "../../../firebase/config";
 
 type Props = StackScreenProps<PostsStackParamList, "Posts">;
 
 const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const { email, login, avatar } = useAppSelector(selectUserData);
-  const { isCreated } = useUser();
   const userId = useAppSelector(selectUserId);
 
   useEffect(() => {
-    readDataFromDB()
-      .then((data) => {
-        const posts = data?.docs
-          .map((doc) => {
-            const docData = doc.data() as IPost;
-            const docId = doc.id;
+    onSnapshot(collection(db, "posts"), (data) => {
+      const posts = data?.docs
+        .map((doc) => {
+          const docData = doc.data() as IPost;
+          const docId = doc.id;
 
-            return { ...docData, postId: docId };
-          })
-          .filter((post) => post.userId === userId);
+          return { ...docData, postId: docId };
+        })
+        .filter((post) => post.userId === userId);
 
-        setPosts(posts as IPost[]);
-      })
-      .catch((error) => console.log(error.message));
-  }, [isCreated]);
+      setPosts(posts as IPost[]);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -88,7 +89,7 @@ const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate("Map", {
-                        postId: item.postId as string,
+                        location: item.mapLocation as LocationType,
                       })
                     }
                     activeOpacity={0.8}

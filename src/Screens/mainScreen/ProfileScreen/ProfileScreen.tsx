@@ -21,10 +21,10 @@ import {
   authUpdateUserProfilePicture,
 } from "../../../redux/auth/operations";
 import { selectUserData, selectUserId } from "../../../redux/auth/selectors";
-import { readDataFromDB, uploadPicture } from "../../../../firebase/config";
+import { db, uploadPicture } from "../../../../firebase/config";
+import { collection, onSnapshot } from "firebase/firestore";
 
 import { styles } from "./styles";
-import { useUser } from "../../../hooks/hooks";
 
 type Props = BottomTabScreenProps<TabsParamList, "Profile">;
 
@@ -35,7 +35,6 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [picturePath, setPicturePath] = useState<string>("");
   const { avatar, login } = useAppSelector(selectUserData);
-  const { isCreated } = useUser();
   const userId = useAppSelector(selectUserId);
   const dispatch = useAppDispatch();
 
@@ -52,21 +51,19 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
   };
 
   useEffect(() => {
-    readDataFromDB()
-      .then((data) => {
-        const posts = data?.docs
-          .map((doc) => {
-            const docData = doc.data() as IPost;
-            const docId = doc.id;
+    onSnapshot(collection(db, "posts"), (data) => {
+      const posts = data?.docs
+        .map((doc) => {
+          const docData = doc.data() as IPost;
+          const docId = doc.id;
 
-            return { ...docData, postId: docId };
-          })
-          .filter((post) => post.userId === userId);
+          return { ...docData, postId: docId };
+        })
+        .filter((post) => post.userId === userId);
 
-        setPosts(posts as IPost[]);
-      })
-      .catch((error) => console.log(error.message));
-  }, [isCreated]);
+      setPosts(posts as IPost[]);
+    });
+  }, []);
 
   useEffect(() => {
     const statusSetter = async () => {
