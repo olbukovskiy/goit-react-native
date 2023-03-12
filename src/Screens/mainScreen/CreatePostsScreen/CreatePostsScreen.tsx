@@ -16,9 +16,13 @@ import * as Location from "expo-location";
 import { FontAwesome, Octicons, Feather, AntDesign } from "@expo/vector-icons";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
-import { useUser } from "../../../hooks/hooks";
-import { TabsParamList, LocationType } from "../../../../services/types";
+import { TabsParamList, LocationType, IPost } from "../../../../services/types";
+import { uploadData, uploadPicture } from "../../../../firebase/config";
+import { useAppSelector } from "../../../hooks/redux-hooks";
+import { selectUserId } from "../../../redux/auth/selectors";
+
 import { styles } from "./styles";
+import { useUser } from "../../../hooks/hooks";
 
 type Props = BottomTabScreenProps<TabsParamList, "CreatePost">;
 
@@ -26,12 +30,61 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [cameraRef, setCameraRef] = useState<Camera | null>(null);
   const [type, setType] = useState(CameraType.back);
+  const [_, setErrorMsg] = useState<string | null>(null);
+
   const [photoPath, setPhotoPath] = useState<string | null>(null);
   const [postTitle, setPostTitle] = useState<string>("");
   const [photoLocation, setPhotoLocation] = useState<string>("");
   const [mapLocation, setMapLocation] = useState<LocationType | null>(null);
-  const [_, setErrorMsg] = useState<string | null>(null);
-  const { setPostsState } = useUser();
+  const { setIsCreated } = useUser();
+  const userId = useAppSelector(selectUserId);
+
+  const submitHandler = async () => {
+    if (!photoPath || !postTitle) {
+      console.log("Нужно заполнить все обязательные поля");
+      return;
+    }
+
+    if (photoPath && postTitle) {
+      const photoURL = await uploadPicture(photoPath, "post");
+
+      const post: IPost = {
+        userId: userId as string,
+        img: photoURL as string,
+        title: postTitle,
+        location: photoLocation,
+        mapLocation,
+        likes: 0,
+        comments: [],
+      };
+
+      const postId = await uploadData(post);
+      console.log(postId);
+
+      setIsCreated((prevState) => prevState + 1);
+      setPhotoPath(null);
+      setPostTitle("");
+      setPhotoLocation("");
+      setMapLocation(null);
+      navigation.navigate("PostsScreen");
+    }
+  };
+
+  const makePhotoHandler = async () => {
+    if (cameraRef) {
+      const { uri } = await cameraRef.takePictureAsync();
+      await MediaLibrary.createAssetAsync(uri);
+      setPhotoPath(uri);
+    }
+  };
+
+  const deletePostHandler = () => {
+    setPhotoPath(null);
+    setPostTitle("");
+    setPhotoLocation("");
+    setMapLocation(null);
+    navigation.navigate("PostsScreen");
+  };
 
   useEffect(() => {
     const statusSetter = async () => {
@@ -56,7 +109,9 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
         setErrorMsg("Permission to access location was denied");
         return;
       }
+
       let location = await Location.getCurrentPositionAsync({});
+
       const coords: LocationType = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -108,14 +163,7 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
                         >
                           <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={async () => {
-                              if (cameraRef) {
-                                const { uri } =
-                                  await cameraRef.takePictureAsync();
-                                await MediaLibrary.createAssetAsync(uri);
-                                setPhotoPath(uri);
-                              }
-                            }}
+                            onPress={makePhotoHandler}
                             style={[
                               styles.iconWrapper,
                               {
@@ -250,32 +298,7 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
                 />
               </View>
               <TouchableOpacity
-                onPress={() => {
-                  if (!photoPath || !postTitle) {
-                    console.log("Нужно заполнить все обязательные поля");
-                    return;
-                  }
-
-                  if (photoPath && postTitle) {
-                    setPostsState((prevPosts) => {
-                      return [
-                        ...prevPosts,
-                        {
-                          id: `${prevPosts.length + 1}`,
-                          img: { uri: photoPath },
-                          title: postTitle,
-                          location: photoLocation,
-                          mapLocation,
-                        },
-                      ];
-                    });
-
-                    setPhotoPath(null);
-                    setPostTitle("");
-                    setPhotoLocation("");
-                    navigation.navigate("PostsScreen");
-                  }
-                }}
+                onPress={submitHandler}
                 activeOpacity={0.8}
                 style={{ ...styles.button, marginTop: 32 }}
               >
@@ -283,12 +306,7 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              onPress={() => {
-                setPhotoPath(null);
-                setPostTitle("");
-                setPhotoLocation("");
-                navigation.navigate("PostsScreen");
-              }}
+              onPress={deletePostHandler}
               activeOpacity={0.8}
               style={{
                 alignSelf: "center",

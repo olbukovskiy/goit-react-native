@@ -1,3 +1,4 @@
+import format from "date-fns/format";
 import { IReducerState, ActionType } from "./types";
 
 export function reducer(
@@ -29,4 +30,12 @@ export function reducer(
     default:
       return { ...state };
   }
+}
+
+export function formatDate(time: string) {
+  if (!time) {
+    return "Unknown";
+  }
+
+  return format(Date.parse(time), "dd LLLL, yyyy | HH:mm");
 }

@@ -1,8 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore/lite";
+import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import "firebase/auth";
+import { IPost } from "../services/types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAV_4kEramuqb6jKfgbwbITaIFLuQtdNNs",
@@ -45,6 +47,31 @@ export const uploadPicture = async (
 
       return pictureUrl;
     }
+
+    return "https://via.placeholder.com/200x300.svg/000000/ffffff?text=Sorry+,+image+loading+is+failed";
+  } catch (error) {
+    const newError = error as { message: string };
+    console.log(newError.message);
+  }
+};
+
+export const uploadData = async (post: IPost) => {
+  try {
+    const postsCollection = collection(db, "posts");
+    const postRef = await addDoc(postsCollection, post);
+
+    return postRef.id;
+  } catch (error) {
+    const newError = error as { message: string };
+    console.log(newError.message);
+  }
+};
+
+export const readDataFromDB = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "posts"));
+
+    return querySnapshot;
   } catch (error) {
     const newError = error as { message: string };
     console.log(newError.message);

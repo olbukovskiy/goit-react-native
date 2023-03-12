@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,17 +9,38 @@ import {
 } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { Octicons, Feather } from "@expo/vector-icons";
-import { useUser } from "../../hooks/hooks";
-import { PostsStackParamList } from "../../../services/types";
+
+import { IPost, PostsStackParamList } from "../../../services/types";
 import { styles } from "./styles";
 import { useAppSelector } from "../../hooks/redux-hooks";
-import { selectUserData } from "../../redux/auth/selectors";
+import { selectUserData, selectUserId } from "../../redux/auth/selectors";
+import { readDataFromDB } from "../../../firebase/config";
+import { useUser } from "../../hooks/hooks";
 
 type Props = StackScreenProps<PostsStackParamList, "Posts">;
 
 const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
-  const { postsState } = useUser();
+  const [posts, setPosts] = useState<IPost[]>([]);
   const { email, login, avatar } = useAppSelector(selectUserData);
+  const { isCreated } = useUser();
+  const userId = useAppSelector(selectUserId);
+
+  useEffect(() => {
+    readDataFromDB()
+      .then((data) => {
+        const posts = data?.docs
+          .map((doc) => {
+            const docData = doc.data() as IPost;
+            const docId = doc.id;
+
+            return { ...docData, postId: docId };
+          })
+          .filter((post) => post.userId === userId);
+
+        setPosts(posts as IPost[]);
+      })
+      .catch((error) => console.log(error.message));
+  }, [isCreated]);
 
   return (
     <View style={styles.container}>
@@ -34,19 +56,21 @@ const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
       <SafeAreaView style={styles.wrapper}>
         <FlatList
           style={{ marginBottom: 32 }}
-          data={postsState}
-          keyExtractor={(item) => item.id}
+          data={posts}
+          keyExtractor={(item) => item.postId as string}
           renderItem={({ item }) => {
             return (
               <View style={styles.wrapper}>
                 <View>
-                  <Image style={styles.picture} source={item.img} />
+                  <Image style={styles.picture} source={{ uri: item.img }} />
                 </View>
                 <Text style={styles.title}>{item.title}</Text>
                 <View style={styles.descrWraper}>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("Comments", { postId: item.id })
+                      navigation.navigate("Comments", {
+                        postId: item.postId as string,
+                      })
                     }
                     activeOpacity={0.8}
                     style={styles.commentsWrapper}
@@ -63,7 +87,9 @@ const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("Map", { postId: item.id })
+                      navigation.navigate("Map", {
+                        postId: item.postId as string,
+                      })
                     }
                     activeOpacity={0.8}
                     style={styles.locationWrapper}

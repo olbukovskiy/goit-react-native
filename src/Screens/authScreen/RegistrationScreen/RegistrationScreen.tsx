@@ -16,14 +16,14 @@ import { useState, useReducer, useEffect } from "react";
 import { IPasswordSettings, IReducerState } from "../../../../services/types";
 import { reducer } from "../../../../services/functions";
 import { RootStackParamList } from "../../../../services/types";
-import styles from "./styles";
 
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import { useUser } from "../../../hooks/hooks";
 import { authSignUpUser } from "../../../redux/auth/operations";
 import { useAppDispatch } from "../../../hooks/redux-hooks";
 import { uploadPicture } from "../../../../firebase/config";
+
+import styles from "./styles";
 
 const reducerState: IReducerState = {
   email: false,
@@ -54,7 +54,6 @@ const RegistrationScreen: React.FunctionComponent<Props> = ({ navigation }) => {
   const [showCamera, setShowCamera] = useState(false);
 
   const dispatchOperator = useAppDispatch();
-  const { setAuthState } = useUser();
 
   const keyboardCloseHandler = () => {
     setIsActive(false);
@@ -64,7 +63,6 @@ const RegistrationScreen: React.FunctionComponent<Props> = ({ navigation }) => {
 
   const submitHandler = async () => {
     keyboardCloseHandler();
-    setAuthState({ login, email, password, avatar: { uri: photoPath } });
 
     const avatar = await uploadPicture(photoPath, "profile");
 

@@ -13,14 +13,39 @@ import { IComment, PostsStackParamList } from "../../../../services/types";
 import { styles } from "./styles";
 import { useUser } from "../../../hooks/hooks";
 import { useEffect, useState } from "react";
+import { formatDate } from "../../../../services/functions";
+import { useAppSelector } from "../../../hooks/redux-hooks";
+import { selectUserData } from "../../../redux/auth/selectors";
 
 type Props = StackScreenProps<PostsStackParamList, "Comments">;
 
-const CommentsScreen: React.FunctionComponent<Props> = ({ navigation }) => {
+const CommentsScreen: React.FunctionComponent<Props> = ({
+  navigation,
+  route,
+}) => {
   const [comment, setComment] = useState("");
-  const { showTab, hideTab, comments, setComments } = useUser();
+  const { avatar } = useAppSelector(selectUserData);
+  const postId = route.params.postId;
 
-  const submitHandler = () => {};
+  const { showTab, hideTab, comments } = useUser();
+
+  const submitHandler = () => {
+    const date = formatDate(new Date().toString());
+    const uniqueId = Date.now().toString();
+
+    const commentData: IComment = {
+      postId,
+      id: uniqueId,
+      content: comment,
+      posted: date,
+      author: avatar as string,
+    };
+
+    // далі відправляємо цей комент кудись і обнуляємо вміст поля вводу комента
+    console.log(commentData);
+
+    setComment("");
+  };
 
   useEffect(() => {
     navigation.addListener("focus", hideTab);
@@ -64,7 +89,11 @@ const CommentsScreen: React.FunctionComponent<Props> = ({ navigation }) => {
             placeholderTextColor="#BDBDBD"
             onChangeText={(value) => setComment(value)}
           />
-          <TouchableOpacity activeOpacity={0.8} style={styles.iconWrapper}>
+          <TouchableOpacity
+            onPress={submitHandler}
+            activeOpacity={0.8}
+            style={styles.iconWrapper}
+          >
             <AntDesign
               style={[
                 styles.icon,

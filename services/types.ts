@@ -51,6 +51,7 @@ export type LocationType = {
 };
 
 export interface IComment {
+  postId?: string;
   id: string;
   author: string;
   content: string;
@@ -65,4 +66,15 @@ export interface IProps {
   location: string;
   likes?: number;
   mapLocation?: LocationType | null;
+}
+
+export interface IPost {
+  userId: string;
+  postId?: string;
+  img: string;
+  title: string;
+  location: string;
+  mapLocation: LocationType | null;
+  likes?: number;
+  comments?: IComment[];
 }

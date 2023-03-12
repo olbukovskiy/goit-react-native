@@ -5,54 +5,31 @@ import {
   SetStateAction,
   Dispatch,
 } from "react";
-import { IComment, IProps, IState } from "../../services/types";
+import { IComment, IState } from "../../services/types";
 
 type GlobalContext = {
+  isCreated?: number;
+  setIsCreated: Dispatch<SetStateAction<number>>;
   isShow: boolean;
   showTab: () => void;
   hideTab: () => void;
-  postsState: IProps[];
-  setPostsState: Dispatch<SetStateAction<IProps[]>>;
-  authState: IState;
-  setAuthState: Dispatch<SetStateAction<IState>>;
+
   comments: IComment[];
   setComments: Dispatch<SetStateAction<IComment[]>>;
 };
 
 const UserContext = createContext<GlobalContext>({
+  isCreated: 0,
   isShow: true,
   showTab: () => {},
   hideTab: () => {},
-  postsState: [],
-  setPostsState: () => {},
-  authState: {
-    login: "Name Surname",
-    email: "email@mail.com",
-    password: "hallo",
-  },
-  setAuthState: () => {},
+
   comments: [],
   setComments: () => {},
+  setIsCreated: () => {},
 });
 
 export const useUser = () => useContext(UserContext);
-
-const initialState: IProps[] = [
-  {
-    id: "1",
-    img: require("../../assets/images/Rectangle1.png"),
-    title: "Forrest",
-    comments: [],
-    location: "Harkiv",
-  },
-  {
-    id: "2",
-    img: require("../../assets/images/Rectangle2.png"),
-    title: "Sky",
-    comments: [],
-    location: "Ternopil",
-  },
-];
 
 const initialComments: IComment[] = [
   {
@@ -105,19 +82,12 @@ const initialComments: IComment[] = [
   },
 ];
 
-const authInitState: IState = {
-  login: "Name Surname",
-  email: "email@mail.com",
-  avatar: require("../../assets/images/User.png"),
-  password: "hallo",
-};
-
 const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [isCreated, setIsCreated] = useState(0);
   const [isShow, setIsShow] = useState(true);
-  const [postsState, setPostsState] = useState<IProps[]>(initialState);
-  const [authState, setAuthState] = useState<IState>(authInitState);
+
   const [comments, setComments] = useState(initialComments);
 
   const showTab = () => {
@@ -134,12 +104,11 @@ const UserProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({
         isShow,
         showTab,
         hideTab,
-        postsState,
-        setPostsState,
-        authState,
-        setAuthState,
+
         comments,
         setComments,
+        isCreated,
+        setIsCreated,
       }}
     >
       {children}

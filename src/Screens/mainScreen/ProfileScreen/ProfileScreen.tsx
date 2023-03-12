@@ -13,28 +13,30 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { AntDesign, Feather, Octicons, FontAwesome } from "@expo/vector-icons";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { TabsParamList } from "../../../../services/types";
-import { useUser } from "../../../hooks/hooks";
-import { styles } from "./styles";
+import { IPost, TabsParamList } from "../../../../services/types";
+
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import {
   authSignOutUser,
   authUpdateUserProfilePicture,
 } from "../../../redux/auth/operations";
-import { selectUserData } from "../../../redux/auth/selectors";
-import { uploadPicture } from "../../../../firebase/config";
-import { async } from "@firebase/util";
+import { selectUserData, selectUserId } from "../../../redux/auth/selectors";
+import { readDataFromDB, uploadPicture } from "../../../../firebase/config";
+
+import { styles } from "./styles";
+import { useUser } from "../../../hooks/hooks";
 
 type Props = BottomTabScreenProps<TabsParamList, "Profile">;
 
 const ProfileScreen: React.FunctionComponent<Props> = () => {
+  const [posts, setPosts] = useState<IPost[]>([]);
   const [_, setHasPermission] = useState<boolean>(false);
   const [cameraRef, setCameraRef] = useState<Camera | null>(null);
   const [showCamera, setShowCamera] = useState<boolean>(false);
-  const { postsState } = useUser();
   const [picturePath, setPicturePath] = useState<string>("");
-
   const { avatar, login } = useAppSelector(selectUserData);
+  const { isCreated } = useUser();
+  const userId = useAppSelector(selectUserId);
   const dispatch = useAppDispatch();
 
   const logOutHandler = () => {
@@ -43,10 +45,28 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
 
   const changeUserProfilePicture = async () => {
     const avatar = await uploadPicture(picturePath, "profile");
+
     if (typeof avatar === "string") {
       dispatch(authUpdateUserProfilePicture(avatar.toString()));
     }
   };
+
+  useEffect(() => {
+    readDataFromDB()
+      .then((data) => {
+        const posts = data?.docs
+          .map((doc) => {
+            const docData = doc.data() as IPost;
+            const docId = doc.id;
+
+            return { ...docData, postId: docId };
+          })
+          .filter((post) => post.userId === userId);
+
+        setPosts(posts as IPost[]);
+      })
+      .catch((error) => console.log(error.message));
+  }, [isCreated]);
 
   useEffect(() => {
     const statusSetter = async () => {
@@ -101,13 +121,16 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
               <SafeAreaView style={styles.listWrapper}>
                 <FlatList
                   style={{ marginBottom: 32 }}
-                  data={postsState}
-                  keyExtractor={(item) => item.id}
+                  data={posts}
+                  keyExtractor={(item) => item.postId as string}
                   renderItem={({ item }) => {
                     return (
                       <View style={styles.listWrapper}>
                         <View>
-                          <Image style={styles.picture} source={item.img} />
+                          <Image
+                            style={styles.picture}
+                            source={{ uri: item.img }}
+                          />
                         </View>
                         <Text style={styles.title}>{item.title}</Text>
                         <View style={styles.descrWraper}>
@@ -136,7 +159,7 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
                                 color="#FF6C00"
                               />
                               <Text style={styles.commentsCalc}>
-                                {item?.likes ?? 333}
+                                {item?.likes ?? 0}
                               </Text>
                             </View>
                           </View>
