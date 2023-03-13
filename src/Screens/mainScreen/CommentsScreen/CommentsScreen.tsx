@@ -31,7 +31,7 @@ const CommentsScreen: React.FunctionComponent<Props> = ({
 }) => {
   const [comments, setComments] = useState<IComment[]>([]);
   const [comment, setComment] = useState("");
-  const { avatar, userId, login } = useAppSelector(selectUserData);
+  const { avatar, login } = useAppSelector(selectUserData);
   const { pictureURL, postId } = route.params;
 
   const { showTab, hideTab } = useUser();
@@ -40,7 +40,6 @@ const CommentsScreen: React.FunctionComponent<Props> = ({
     const date = formatDate(new Date().toString());
 
     const commentData: IComment = {
-      userId: userId as string,
       login: login as string,
       content: comment,
       posted: date,

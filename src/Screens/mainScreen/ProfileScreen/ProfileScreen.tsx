@@ -14,7 +14,7 @@ import * as MediaLibrary from "expo-media-library";
 import { AntDesign, Feather, Octicons, FontAwesome } from "@expo/vector-icons";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
-import { IPost, TabsParamList } from "../../../../services/types";
+import { IComment, IPost, TabsParamList } from "../../../../services/types";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import {
   authSignOutUser,
@@ -22,14 +22,26 @@ import {
 } from "../../../redux/auth/operations";
 import { selectUserData } from "../../../redux/auth/selectors";
 import { db, uploadPicture } from "../../../../firebase/config";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 
 import { styles } from "./styles";
+import { ICommentsQuantity } from "../../../components/Posts/Posts";
 
 type Props = BottomTabScreenProps<TabsParamList, "Profile">;
 
 const ProfileScreen: React.FunctionComponent<Props> = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
+  const [commentsQuantity, setCommentsQuantity] = useState<ICommentsQuantity>(
+    {}
+  );
   const [_, setHasPermission] = useState<boolean>(false);
   const [cameraRef, setCameraRef] = useState<Camera | null>(null);
   const [showCamera, setShowCamera] = useState<boolean>(false);
@@ -44,10 +56,21 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
   const changeUserProfilePicture = async () => {
     const avatar = await uploadPicture(picturePath, "profile");
 
-    console.log("say hallo telmo!");
-
     if (typeof avatar === "string") {
       dispatch(authUpdateUserProfilePicture(avatar.toString()));
+    }
+  };
+
+  const onLikeClickHandler = async (postId: string) => {
+    const docRef = doc(db, "posts", `${postId}`);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const postLikes = data.likes;
+      await updateDoc(docRef, { likes: postLikes + 1 });
+    } else {
+      console.log("No such document!");
     }
   };
 
@@ -70,6 +93,24 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
   }, []);
 
   useEffect(() => {
+    posts.forEach((post) => {
+      onSnapshot(collection(db, `posts/${post.postId}/comments`), (data) => {
+        const commentsArray = data?.docs.map((doc) => {
+          const docData = doc.data() as IComment;
+          const docId = doc.id;
+
+          return { ...docData, commentId: docId };
+        });
+
+        const singlePostComments = { [post.postId]: commentsArray.length };
+        setCommentsQuantity((prevComments) => {
+          return { ...prevComments, ...singlePostComments };
+        });
+      });
+    });
+  }, []);
+
+  useEffect(() => {
     const statusSetter = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
@@ -86,7 +127,7 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
 
   return (
     <>
-      {!showCamera && (
+      {!showCamera && posts && commentsQuantity && (
         <View style={styles.container}>
           <ImageBackground
             style={styles.image}
@@ -144,10 +185,14 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
                                 color="#FF6C00"
                               />
                               <Text style={styles.commentsCalc}>
-                                {item.comments?.length}
+                                {commentsQuantity[item.postId] ?? 0}
                               </Text>
                             </View>
-                            <View
+                            <TouchableOpacity
+                              activeOpacity={0.8}
+                              onPress={() => {
+                                onLikeClickHandler(item.postId);
+                              }}
                               style={{
                                 ...styles.commentsWrapper,
                                 marginLeft: 24,
@@ -162,7 +207,7 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
                               <Text style={styles.commentsCalc}>
                                 {item?.likes ?? 0}
                               </Text>
-                            </View>
+                            </TouchableOpacity>
                           </View>
                           <View style={styles.locationWrapper}>
                             <Octicons

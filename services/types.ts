@@ -45,7 +45,6 @@ export type PostsStackParamList = {
 };
 
 export interface IComment {
-  userId: string;
   commentId?: string;
   login: string;
   author: string;
@@ -55,11 +54,10 @@ export interface IComment {
 
 export interface IPost {
   userId: string;
-  postId?: string;
+  postId: string;
   img: string;
   title: string;
   location: string;
   mapLocation: LocationType | null;
   likes?: number;
-  comments?: IComment[];
 }

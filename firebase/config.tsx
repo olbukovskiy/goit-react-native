@@ -43,6 +43,7 @@ export const uploadPicture = async (
 
     if (imageRef !== undefined) {
       await uploadBytes(imageRef, pictureFile);
+
       const pictureUrl = await getDownloadURL(imageRef);
 
       return pictureUrl;
