@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import { formatDate } from "../../../../services/functions";
 import { useAppSelector } from "../../../hooks/redux-hooks";
 import { selectUserData } from "../../../redux/auth/selectors";
+import { db, uploadComment } from "../../../../firebase/config";
+import { collection, onSnapshot } from "firebase/firestore";
 
 type Props = StackScreenProps<PostsStackParamList, "Comments">;
 
@@ -23,29 +25,41 @@ const CommentsScreen: React.FunctionComponent<Props> = ({
   navigation,
   route,
 }) => {
+  const [comments, setComments] = useState<IComment[]>([]);
   const [comment, setComment] = useState("");
-  const { avatar } = useAppSelector(selectUserData);
+  const { avatar, userId, login } = useAppSelector(selectUserData);
   const postId = route.params.postId;
 
-  const { showTab, hideTab, comments } = useUser();
+  const { showTab, hideTab } = useUser();
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     const date = formatDate(new Date().toString());
-    const uniqueId = Date.now().toString();
 
     const commentData: IComment = {
-      postId,
-      id: uniqueId,
+      userId: userId as string,
+      login: login as string,
       content: comment,
       posted: date,
       author: avatar as string,
     };
 
-    // далі відправляємо цей комент кудись і обнуляємо вміст поля вводу комента
-    console.log(commentData);
+    await uploadComment(postId, commentData);
 
     setComment("");
   };
+
+  useEffect(() => {
+    onSnapshot(collection(db, `posts/${postId}/comments`), (data) => {
+      const commentsArray = data?.docs.map((doc) => {
+        const docData = doc.data() as IComment;
+        const docId = doc.id;
+
+        return { ...docData, commentId: docId };
+      });
+
+      setComments(commentsArray as IComment[]);
+    });
+  }, []);
 
   useEffect(() => {
     navigation.addListener("focus", hideTab);
@@ -68,9 +82,13 @@ const CommentsScreen: React.FunctionComponent<Props> = ({
           <SafeAreaView style={styles.listWrapper}>
             <ScrollView>
               {comments.map((item) => (
-                <View style={styles.commentWrapper} key={item.id}>
+                <View style={styles.commentWrapper} key={item.commentId}>
                   <View style={styles.authorImageWrapper}>
-                    <Image style={styles.authorImage} />
+                    <Image
+                      style={styles.authorImage}
+                      source={{ uri: item.author }}
+                    />
+                    <Text>{item.login}</Text>
                   </View>
                   <View style={styles.textWrapper}>
                     <Text style={styles.text}>{item.content}</Text>

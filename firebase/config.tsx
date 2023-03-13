@@ -4,7 +4,7 @@ import { addDoc, collection, getFirestore } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import "firebase/auth";
-import { IPost } from "../services/types";
+import { IComment, IPost } from "../services/types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAV_4kEramuqb6jKfgbwbITaIFLuQtdNNs",
@@ -61,6 +61,18 @@ export const uploadData = async (post: IPost) => {
     const postRef = await addDoc(postsCollection, post);
 
     return postRef.id;
+  } catch (error) {
+    const newError = error as { message: string };
+    console.log(newError.message);
+  }
+};
+
+export const uploadComment = async (postId: string, content: IComment) => {
+  try {
+    const commentsColection = collection(db, `posts/${postId}/comments`);
+    const commentRef = await addDoc(commentsColection, content);
+
+    return commentRef.id;
   } catch (error) {
     const newError = error as { message: string };
     console.log(newError.message);

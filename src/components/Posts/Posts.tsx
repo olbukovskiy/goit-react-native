@@ -30,14 +30,12 @@ const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
 
   useEffect(() => {
     onSnapshot(collection(db, "posts"), (data) => {
-      const posts = data?.docs
-        .map((doc) => {
-          const docData = doc.data() as IPost;
-          const docId = doc.id;
+      const posts = data?.docs.map((doc) => {
+        const docData = doc.data() as IPost;
+        const docId = doc.id;
 
-          return { ...docData, postId: docId };
-        })
-        .filter((post) => post.userId === userId);
+        return { ...docData, postId: docId };
+      });
 
       setPosts(posts as IPost[]);
     });

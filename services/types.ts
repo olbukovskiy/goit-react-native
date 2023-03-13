@@ -51,8 +51,9 @@ export type PostsStackParamList = {
 };
 
 export interface IComment {
-  postId?: string;
-  id: string;
+  userId: string;
+  commentId?: string;
+  login: string;
   author: string;
   content: string;
   posted: string;

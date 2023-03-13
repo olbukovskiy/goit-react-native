@@ -40,32 +40,36 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
   const userId = useAppSelector(selectUserId);
 
   const submitHandler = async () => {
-    if (!photoPath || !postTitle) {
-      console.log("Нужно заполнить все обязательные поля");
-      return;
-    }
+    try {
+      if (!photoPath || !postTitle) {
+        console.log("Нужно заполнить все обязательные поля");
+        return;
+      }
 
-    if (photoPath && postTitle) {
-      const photoURL = await uploadPicture(photoPath, "post");
+      if (photoPath && postTitle) {
+        const photoURL = await uploadPicture(photoPath, "post");
 
-      const post: IPost = {
-        userId: userId as string,
-        img: photoURL as string,
-        title: postTitle,
-        location: photoLocation,
-        mapLocation,
-        likes: 0,
-        comments: [],
-      };
+        const post: IPost = {
+          userId: userId as string,
+          img: photoURL as string,
+          title: postTitle,
+          location: photoLocation,
+          mapLocation,
+          likes: 0,
+          comments: [],
+        };
 
-      const postId = await uploadData(post);
-      console.log(postId);
+        await uploadData(post);
 
-      setPhotoPath(null);
-      setPostTitle("");
-      setPhotoLocation("");
-      setMapLocation(null);
-      navigation.navigate("PostsScreen");
+        setPhotoPath(null);
+        setPostTitle("");
+        setPhotoLocation("");
+        setMapLocation(null);
+        navigation.navigate("PostsScreen");
+      }
+    } catch (error) {
+      const newError = error as { message: string };
+      console.log(newError.message);
     }
   };
 
