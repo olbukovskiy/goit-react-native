@@ -13,16 +13,16 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { AntDesign, Feather, Octicons, FontAwesome } from "@expo/vector-icons";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { IPost, TabsParamList } from "../../../../services/types";
 
+import { IPost, TabsParamList } from "../../../../services/types";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import {
   authSignOutUser,
   authUpdateUserProfilePicture,
 } from "../../../redux/auth/operations";
-import { selectUserData, selectUserId } from "../../../redux/auth/selectors";
+import { selectUserData } from "../../../redux/auth/selectors";
 import { db, uploadPicture } from "../../../../firebase/config";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 import { styles } from "./styles";
 
@@ -34,8 +34,7 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
   const [cameraRef, setCameraRef] = useState<Camera | null>(null);
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [picturePath, setPicturePath] = useState<string>("");
-  const { avatar, login } = useAppSelector(selectUserData);
-  const userId = useAppSelector(selectUserId);
+  const { avatar, login, userId } = useAppSelector(selectUserData);
   const dispatch = useAppDispatch();
 
   const logOutHandler = () => {
@@ -45,21 +44,26 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
   const changeUserProfilePicture = async () => {
     const avatar = await uploadPicture(picturePath, "profile");
 
+    console.log("say hallo telmo!");
+
     if (typeof avatar === "string") {
       dispatch(authUpdateUserProfilePicture(avatar.toString()));
     }
   };
 
   useEffect(() => {
-    onSnapshot(collection(db, "posts"), (data) => {
-      const posts = data?.docs
-        .map((doc) => {
-          const docData = doc.data() as IPost;
-          const docId = doc.id;
+    const filterQuery = query(
+      collection(db, "posts"),
+      where("userId", "==", userId)
+    );
 
-          return { ...docData, postId: docId };
-        })
-        .filter((post) => post.userId === userId);
+    onSnapshot(filterQuery, (data) => {
+      const posts = data?.docs.map((doc) => {
+        const docData = doc.data() as IPost;
+        const docId = doc.id;
+
+        return { ...docData, postId: docId };
+      });
 
       setPosts(posts as IPost[]);
     });
@@ -202,8 +206,8 @@ const ProfileScreen: React.FunctionComponent<Props> = () => {
                     const { uri } = await cameraRef.takePictureAsync();
                     await MediaLibrary.createAssetAsync(uri);
                     setPicturePath(uri);
-                    changeUserProfilePicture();
                     setShowCamera(false);
+                    await changeUserProfilePicture();
                   }
                 }}
                 style={[

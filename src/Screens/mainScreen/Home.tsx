@@ -6,6 +6,7 @@ import { Feather } from "@expo/vector-icons";
 import ProfileScreen from "./ProfileScreen/ProfileScreen";
 import CreatePostsScreen from "./CreatePostsScreen/CreatePostsScreen";
 import PostsScreen from "./PostsScreen";
+
 import { RootStackParamList, TabsParamList } from "../../../services/types";
 import { useAppDispatch } from "../../hooks/redux-hooks";
 import { authSignOutUser } from "../../redux/auth/operations";
@@ -14,7 +15,7 @@ const Tabs = createBottomTabNavigator<TabsParamList>();
 
 type Props = StackScreenProps<RootStackParamList, "Home">;
 
-const Home: React.FunctionComponent<Props> = ({ navigation }) => {
+const Home: React.FunctionComponent<Props> = () => {
   const dispatch = useAppDispatch();
 
   const logOutHandler = () => {

@@ -22,7 +22,6 @@ import { useAppSelector } from "../../../hooks/redux-hooks";
 import { selectUserId } from "../../../redux/auth/selectors";
 
 import { styles } from "./styles";
-import { useUser } from "../../../hooks/hooks";
 
 type Props = BottomTabScreenProps<TabsParamList, "CreatePost">;
 

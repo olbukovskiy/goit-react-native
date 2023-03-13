@@ -18,7 +18,7 @@ import {
 } from "../../../services/types";
 import { styles } from "./styles";
 import { useAppSelector } from "../../hooks/redux-hooks";
-import { selectUserData, selectUserId } from "../../redux/auth/selectors";
+import { selectUserData } from "../../redux/auth/selectors";
 import { db } from "../../../firebase/config";
 
 type Props = StackScreenProps<PostsStackParamList, "Posts">;
@@ -26,7 +26,6 @@ type Props = StackScreenProps<PostsStackParamList, "Posts">;
 const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const { email, login, avatar } = useAppSelector(selectUserData);
-  const userId = useAppSelector(selectUserId);
 
   useEffect(() => {
     onSnapshot(collection(db, "posts"), (data) => {
@@ -69,6 +68,7 @@ const Posts: React.FunctionComponent<Props> = ({ navigation }) => {
                     onPress={() =>
                       navigation.navigate("Comments", {
                         postId: item.postId as string,
+                        pictureURL: item.img,
                       })
                     }
                     activeOpacity={0.8}

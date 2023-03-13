@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,18 +7,21 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+import { collection, onSnapshot } from "firebase/firestore";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";
+
 import { IComment, PostsStackParamList } from "../../../../services/types";
-import { styles } from "./styles";
 import { useUser } from "../../../hooks/hooks";
-import { useEffect, useState } from "react";
 import { formatDate } from "../../../../services/functions";
 import { useAppSelector } from "../../../hooks/redux-hooks";
 import { selectUserData } from "../../../redux/auth/selectors";
 import { db, uploadComment } from "../../../../firebase/config";
-import { collection, onSnapshot } from "firebase/firestore";
+
+import { styles } from "./styles";
 
 type Props = StackScreenProps<PostsStackParamList, "Comments">;
 
@@ -28,7 +32,7 @@ const CommentsScreen: React.FunctionComponent<Props> = ({
   const [comments, setComments] = useState<IComment[]>([]);
   const [comment, setComment] = useState("");
   const { avatar, userId, login } = useAppSelector(selectUserData);
-  const postId = route.params.postId;
+  const { pictureURL, postId } = route.params;
 
   const { showTab, hideTab } = useUser();
 
@@ -76,7 +80,7 @@ const CommentsScreen: React.FunctionComponent<Props> = ({
       <View style={styles.wrapper}>
         <ScrollView>
           <View style={styles.imageWrapper}>
-            <Image style={styles.image} />
+            <Image style={styles.image} source={{ uri: pictureURL }} />
           </View>
 
           <SafeAreaView style={styles.listWrapper}>
@@ -105,6 +109,7 @@ const CommentsScreen: React.FunctionComponent<Props> = ({
             style={styles.input}
             placeholder="Комментировать..."
             placeholderTextColor="#BDBDBD"
+            value={comment}
             onChangeText={(value) => setComment(value)}
           />
           <TouchableOpacity

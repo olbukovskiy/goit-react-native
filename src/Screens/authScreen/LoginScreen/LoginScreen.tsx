@@ -11,13 +11,14 @@ import {
 } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { useState, useReducer } from "react";
+
 import { IPasswordSettings, IReducerState } from "../../../../services/types";
 import { reducer } from "../../../../services/functions";
 import { RootStackParamList } from "../../../../services/types";
-import { useUser } from "../../../hooks/hooks";
-import styles from "./styles";
 import { useAppDispatch } from "../../../hooks/redux-hooks";
 import { authSignInUser } from "../../../redux/auth/operations";
+
+import styles from "./styles";
 
 const reducerState: IReducerState = {
   email: false,
@@ -39,7 +40,6 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
   const [state, dispatch] = useReducer(reducer, reducerState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setAuthState } = useUser();
 
   const dispatchOperator = useAppDispatch();
 
@@ -51,7 +51,6 @@ const LoginScreen: React.FunctionComponent<Props> = ({ navigation }) => {
 
   const submitHandler = () => {
     keyboardCloseHandler();
-    setAuthState({ email, password });
     dispatchOperator(authSignInUser({ email, password }));
   };
 

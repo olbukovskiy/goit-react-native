@@ -29,24 +29,18 @@ export type LocationType = {
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  Home:
-    | {
-        screen: string;
-        params: { login?: string; email: string; password: string };
-      }
-    | undefined;
+  Home: undefined;
 };
 
 export type TabsParamList = {
-  PostsScreen: { login?: string; email: string; password: string } | undefined;
-  CreatePost: any;
-  Profile: any;
-  Login: undefined;
+  PostsScreen: undefined;
+  CreatePost: undefined;
+  Profile: undefined;
 };
 
 export type PostsStackParamList = {
-  Posts: { login: string; email?: string; password: string };
-  Comments: { postId: string };
+  Posts: undefined;
+  Comments: { postId: string; pictureURL: string };
   Map: { location: LocationType };
 };
 
@@ -57,16 +51,6 @@ export interface IComment {
   author: string;
   content: string;
   posted: string;
-}
-
-export interface IProps {
-  id: string;
-  img: { uri: string };
-  title: string;
-  comments?: IComment[];
-  location: string;
-  likes?: number;
-  mapLocation?: LocationType | null;
 }
 
 export interface IPost {
