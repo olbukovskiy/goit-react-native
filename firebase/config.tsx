@@ -4,7 +4,7 @@ import { addDoc, collection, getFirestore } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import "firebase/auth";
-import { IComment, IPost } from "../services/types";
+import { IComment, ICreatePost } from "../services/types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAV_4kEramuqb6jKfgbwbITaIFLuQtdNNs",
@@ -56,7 +56,7 @@ export const uploadPicture = async (
   }
 };
 
-export const uploadData = async (post: IPost) => {
+export const uploadData = async (post: ICreatePost) => {
   try {
     const postsCollection = collection(db, "posts");
     const postRef = await addDoc(postsCollection, post);

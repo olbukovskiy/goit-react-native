@@ -15,6 +15,7 @@ import { AntDesign, Feather, Octicons, FontAwesome } from "@expo/vector-icons";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 import { IComment, IPost, TabsParamList } from "../../../../services/types";
+import { ICommentsQuantity } from "../../../components/Posts/Posts";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
 import {
   authSignOutUser,
@@ -33,7 +34,6 @@ import {
 } from "firebase/firestore";
 
 import { styles } from "./styles";
-import { ICommentsQuantity } from "../../../components/Posts/Posts";
 
 type Props = BottomTabScreenProps<TabsParamList, "Profile">;
 

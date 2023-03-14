@@ -16,7 +16,12 @@ import * as Location from "expo-location";
 import { FontAwesome, Octicons, Feather, AntDesign } from "@expo/vector-icons";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
-import { TabsParamList, LocationType, IPost } from "../../../../services/types";
+import {
+  TabsParamList,
+  LocationType,
+  ICreatePost,
+} from "../../../../services/types";
+
 import { uploadData, uploadPicture } from "../../../../firebase/config";
 import { useAppSelector } from "../../../hooks/redux-hooks";
 import { selectUserId } from "../../../redux/auth/selectors";
@@ -48,14 +53,13 @@ const CreatePosts: React.FunctionComponent<Props> = ({ navigation }) => {
       if (photoPath && postTitle) {
         const photoURL = await uploadPicture(photoPath, "post");
 
-        const post: IPost = {
+        const post: ICreatePost = {
           userId: userId as string,
           img: photoURL as string,
           title: postTitle,
           location: photoLocation,
           mapLocation,
           likes: 0,
-          comments: [],
         };
 
         await uploadData(post);

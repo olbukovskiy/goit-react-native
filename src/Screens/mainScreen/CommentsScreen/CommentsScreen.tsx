@@ -7,8 +7,6 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { collection, onSnapshot } from "firebase/firestore";
 import { StackScreenProps } from "@react-navigation/stack";

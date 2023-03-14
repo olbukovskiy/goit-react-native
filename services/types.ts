@@ -52,9 +52,18 @@ export interface IComment {
   posted: string;
 }
 
-export interface IPost {
+export interface ICreatePost {
   userId: string;
+  img: string;
+  title: string;
+  location: string;
+  mapLocation: LocationType | null;
+  likes?: number;
+}
+
+export interface IPost {
   postId: string;
+  userId: string;
   img: string;
   title: string;
   location: string;

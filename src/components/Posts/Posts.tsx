@@ -13,14 +13,17 @@ import { collection, onSnapshot } from "firebase/firestore";
 
 import {
   IComment,
+  ICreatePost,
   IPost,
   LocationType,
   PostsStackParamList,
 } from "../../../services/types";
-import { styles } from "./styles";
+
 import { useAppSelector } from "../../hooks/redux-hooks";
 import { selectUserData } from "../../redux/auth/selectors";
 import { db } from "../../../firebase/config";
+
+import { styles } from "./styles";
 
 type Props = StackScreenProps<PostsStackParamList, "Posts">;
 
